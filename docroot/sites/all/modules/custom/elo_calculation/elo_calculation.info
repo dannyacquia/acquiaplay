@@ -1,0 +1,4 @@
+name = ELO Calculation
+description = Calculate ELO based on matches.
+core = 7.x
+package = Custom

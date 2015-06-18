@@ -1,0 +1,41 @@
+<?php
+/**
+ * @file
+ * A module that can be used for custom hooks that are too small for their own module
+ */
+
+/**
+ * Implements hook_form__alter().
+ *
+ * Uncomment this function to print out $form_id on form pages
+ */
+//function custom_functions_form_alter(&$form, $form_state, $form_id) {
+//    drupal_set_message($form_id);
+//}
+
+/**
+ * Implements hook_form_FORM_ID_alter().
+ *
+ * Changes 'submit' button label from 'Save' to 'Post results' for form ID 'match_node_form'
+ */
+function custom_functions_form_node_form_alter(&$form, $form_state, $form_id) {
+   $form['actions']['submit']['#value'] = t('Post results');
+   $form['field_player2']['und'][0]['target_id']['#title_display'] = 'invisible';
+   $form['field_player4']['und'][0]['target_id']['#title_display'] = 'invisible';
+}
+
+/**
+ * Implements hook_form_FORM_ID_alter().
+ *
+ * Changes text in user registration form
+ */
+function custom_functions_form_user_register_form_alter(&$form, &$form_state, $form_id) {
+    $form ['account']['mail'] = array(
+        '#type' => 'textfield',
+        '#title' => t('Acquia E-mail address'),
+        '#maxlength' => EMAIL_MAX_LENGTH,
+        '#description' => t('A valid @acquia.com e-mail address. All e-mails from the system will be sent to this address. The e-mail address is not made public and will only be used if you wish to receive a new password or wish to receive certain news or notifications by e-mail.'),
+        '#required' => TRUE,
+        '#default_value' => (!$register ? $account->mail : ''),
+    );
+}

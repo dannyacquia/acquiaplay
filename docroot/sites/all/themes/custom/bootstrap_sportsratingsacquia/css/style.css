@@ -1,0 +1,14 @@
+.main-container {
+  margin-top: 50px;
+}
+
+.button-post-match {
+  margin-bottom: 15px;
+}
+
+#cover-image {
+  margin-top: -20px;
+  margin-bottom: 20px;
+  height: 350px;
+  background: url(../images/cover.jpg) no-repeat scroll 50% 0 / cover transparent;
+}

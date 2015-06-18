@@ -1,0 +1,49 @@
+diff --git a/entityreference_current.inc b/entityreference_current.inc
+index 04e4a90..00a010d 100644
+--- a/entityreference_current.inc
++++ b/entityreference_current.inc
+@@ -123,12 +123,21 @@ function entityreference_current_get_values_from_cache($field, $instance) {
+ function entityreference_current_get_current_entity($field, $instance) {
+   $target_type = $field['settings']['target_type'];
+   $entity = menu_get_object($target_type);
+-  if (empty($entity) && !empty($instance['settings']['behaviors']['current']['use_uid']) && $target_type == 'user') {
+-    // If target is user check to see if we can get uid from entity(only for nodes)
+-    $entity = menu_get_object();
+-    if (!empty($entity->uid)) {
+-      $entity = user_load($entity->uid);
++  if (empty($entity) && $target_type == 'user') {
++    if (!empty($instance['settings']['behaviors']['current']['use_uid'])) {
++
++      // If target is user check to see if we can get uid from entity(only for nodes)
++      $entity = menu_get_object();
++      if (!empty($entity->uid)) {
++        $entity = user_load($entity->uid);
++      }
++    }
++    elseif (!empty($instance['settings']['behaviors']['current']['use_current_uid'])) {
++      if (user_is_logged_in()) {
++       global $user;
++        $entity = user_load($user->uid);
++      }
+     }
+   }
+   return $entity;
+-}
+\ No newline at end of file
++}
+diff --git a/plugins/behavior/EntityReferenceCurrentInstanceBehavior.class.php b/plugins/behavior/EntityReferenceCurrentInstanceBehavior.class.php
+index 5c45aa7..f98cc75 100644
+--- a/plugins/behavior/EntityReferenceCurrentInstanceBehavior.class.php
++++ b/plugins/behavior/EntityReferenceCurrentInstanceBehavior.class.php
+@@ -64,6 +64,11 @@ class EntityReferenceCurrentInstanceBehavior extends EntityReference_BehaviorHan
+         '#title' => t('Use the Author for an entity if target type is user.'),
+         '#description' => t('If the target type is User but the current page is a Node select the Author as the entity.'),
+     );
++    $form['use_current_uid'] = array(
++      '#type' => 'checkbox',
++      '#title' => t('Use the Current User if target type is user.'),
++      '#description' => t('If the target type is.....'),
++    );
+ 
+     return $form;
+   }

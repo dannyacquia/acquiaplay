@@ -1,0 +1,288 @@
+<?php
+
+/**
+ * Implement hook_node_presave
+ */
+
+function elo_calculation_node_presave($node) {
+  if ($node->type == 'match') {
+    // Set variables for match data
+
+      global $user;
+      //$node->field_player1[LANGUAGE_NONE][0]['target_id'] = $user->uid;
+      $p1 = $node->field_player1[LANGUAGE_NONE][0]['target_id'];
+      $p3 = $node->field_player3[LANGUAGE_NONE][0]['target_id'];
+      $p1score = $node->field_player1_score[LANGUAGE_NONE][0]['value'];
+      $p3score = $node->field_player2_score[LANGUAGE_NONE][0]['value'];
+      $gt = $node->field_game_type[LANGUAGE_NONE];
+
+      // Check if match submitted was ping pong
+      if ($gt[0]['tid'] == 1) {
+        // Pull data for users ping pong rating, total opponent rating, wins, and losses
+
+          $p1data = entity_metadata_wrapper('user', $p1);
+          $p3data = entity_metadata_wrapper('user', $p3);
+          $p1rating = $p1data->field_ping_pong_rating->value();
+          $p1opprating = $p1data->field_total_pp_opponents_rating->value();
+          $p1wins = $p1data->field_wins->value();
+          $p1losses = $p1data->field_losses->value();
+          $p3rating = $p3data->field_ping_pong_rating->value();
+          $p3opprating = $p3data->field_total_pp_opponents_rating->value();
+          $p3wins = $p3data->field_wins->value();
+          $p3losses = $p3data->field_losses->value();
+          $p1opprating = $p1opprating + $p3rating;
+          $p3opprating = $p3opprating + $p1rating;
+
+        // Adjust wins and losses based on the scores of the match
+          if ($p1score > $p3score) {
+              $p1wins = $p1wins + 1;
+              $p3losses = $p3losses +1;
+          }
+          elseif ($p3score > $p1score) {
+              $p3wins = $p3wins +1;
+              $p1losses = $p1losses +1;
+          }
+          else {
+              watchdog('elo_calculation', 'Player entered ping pong match that resulted in a tie');
+              drupal_set_message('Error saving match: There is no crying in baseball...er...tying in ping pong', 'warning');
+              drupal_goto('node/add/match');
+          }
+        // Calculate the players ELO based on each others ELO and past matches
+          $p1elocalc = $p1opprating + 400 * ($p1wins - $p1losses);
+          $p1elocalc2 = round($p1elocalc / ($p1wins + $p1losses));
+          $p3elocalc = $p3opprating + 400 * ($p3wins - $p3losses);
+          $p3elocalc2 = round($p3elocalc / ($p3wins + $p3losses));
+
+        // Update user data with new values
+          $p1data->field_losses->set($p1losses);
+          $p1data->field_wins->set($p1wins);
+          $p1data->field_ping_pong_rating->set($p1elocalc2);
+          $p1data->field_total_pp_opponents_rating->set($p1opprating);
+          $p1data->save();
+          $p3data->field_wins->set($p3wins);
+          $p3data->field_losses->set($p3losses);
+          $p3data->field_ping_pong_rating->set($p3elocalc2);
+          $p3data->field_total_pp_opponents_rating->set($p3opprating);
+          $p3data->save();
+      }
+      // Check if match submitted was foosball
+      elseif ($gt[0]['tid'] == 2) {
+          // Pull data for users foosball rating, total opponent rating, wins, and losses
+          $p1data = entity_metadata_wrapper('user', $p1);
+          $p3data = entity_metadata_wrapper('user', $p3);
+          $p1rating = $p1data->field_foosball_rating->value();
+          $p1opprating = $p1data->field_total_fb_opponents_rating->value();
+          $p1wins = $p1data->field_foosball_wins->value();
+          $p1losses = $p1data->field_foosball_losses->value();
+          $p3rating = $p3data->field_foosball_rating->value();
+          $p3opprating = $p3data->field_total_fb_opponents_rating->value();
+          $p3wins = $p3data->field_foosball_wins->value();
+          $p3losses = $p3data->field_foosball_losses->value();
+          $p1opprating = $p1opprating + $p3rating;
+          $p3opprating = $p3opprating + $p1rating;
+
+          // Adjust wins and losses based on the scores of the match
+          if ($p1score > $p3score) {
+              $p1wins = $p1wins + 1;
+              $p3losses = $p3losses +1;
+          }
+          elseif ($p3score > $p1score) {
+              $p3wins = $p3wins +1;
+              $p1losses = $p1losses +1;
+          }
+          else {
+              watchdog('elo_calculation', 'Player entered foosball match that resulted in a tie');
+              drupal_set_message('Error saving match: There is no crying in baseball...er...tying in foosball', 'warning');
+              drupal_goto('node/add/match');
+          }
+          // Calculate the players ELO based on each others ELO and past matches
+          $p1elocalc = $p1opprating + 400 * ($p1wins - $p1losses);
+          $p1elocalc2 = round($p1elocalc / ($p1wins + $p1losses));
+          $p3elocalc = $p3opprating + 400 * ($p3wins - $p3losses);
+          $p3elocalc2 = round($p3elocalc / ($p3wins + $p3losses));
+          // Update user data with new values
+
+          $p1data->field_foosball_losses->set($p1losses);
+          $p1data->field_foosball_wins->set($p1wins);
+          $p1data->field_foosball_rating->set($p1elocalc2);
+          $p1data->field_total_fb_opponents_rating->set($p1opprating);
+          $p1data->save();
+          $p3data->field_foosball_wins->set($p3wins);
+          $p3data->field_foosball_losses->set($p3losses);
+          $p3data->field_foosball_rating->set($p3elocalc2);
+          $p3data->field_total_fb_opponents_rating->set($p3opprating);
+          $p3data->save();
+      }
+      // Check if match submitted was ping pong doubles
+      elseif ($gt[0]['tid'] == 6) {
+          $p2 = $node->field_player2[LANGUAGE_NONE][0]['target_id'];
+          $p4 = $node->field_player4[LANGUAGE_NONE][0]['target_id'];
+          // Pull data for users foosball rating, total opponent rating, wins, and losses
+          $p1data = entity_metadata_wrapper('user', $p1);
+          $p2data = entity_metadata_wrapper('user', $p2);
+          $p3data = entity_metadata_wrapper('user', $p3);
+          $p4data = entity_metadata_wrapper('user', $p4);
+          $p1rating = $p1data->field_ping_pong_rating->value();
+          $p1opprating = $p1data->field_total_pp_opponents_rating->value();
+          $p1wins = $p1data->field_wins->value();
+          $p1losses = $p1data->field_losses->value();
+          $p2rating = $p2data->field_ping_pong_rating->value();
+          $p2opprating = $p2data->field_total_pp_opponents_rating->value();
+          $p2wins = $p2data->field_wins->value();
+          $p2losses = $p2data->field_losses->value();
+          $p3rating = $p3data->field_ping_pong_rating->value();
+          $p3opprating = $p3data->field_total_pp_opponents_rating->value();
+          $p3wins = $p3data->field_wins->value();
+          $p3losses = $p3data->field_losses->value();
+          $p4rating = $p4data->field_ping_pong_rating->value();
+          $p4opprating = $p4data->field_total_pp_opponents_rating->value();
+          $p4wins = $p4data->field_wins->value();
+          $p4losses = $p4data->field_losses->value();
+          $team1opprating = round(($p3rating + $p4rating) / 2);
+          $team2opprating = round(($p1rating + $p2rating) / 2);
+          $p1opprating = $p1opprating + $team2opprating;
+          $p2opprating = $p2opprating + $team2opprating;
+          $p3opprating = $p3opprating + $team1opprating;
+          $p4opprating = $p4opprating + $team1opprating;
+
+
+          // Adjust wins and losses based on the scores of the match
+          if ($p1score > $p3score) {
+              $p1wins = $p1wins + 1;
+              $p2wins = $p2wins + 1;
+              $p3losses = $p3losses +1;
+              $p4losses = $p4losses +1;
+          }
+          elseif ($p3score > $p1score) {
+              $p3wins = $p3wins +1;
+              $p4wins = $p4wins +1;
+              $p1losses = $p1losses +1;
+              $p2losses = $p2losses +1;
+          }
+          else {
+              watchdog('elo_calculation', 'Player entered ping pong match that resulted in a tie');
+              drupal_set_message('Error saving match: There is no crying in baseball...er...tying in ping pong', 'warning');
+              drupal_goto('node/add/match');
+          }
+          // Calculate the players ELO based on each others ELO and past matches
+          $p1elocalc = $p1opprating + 400 * ($p1wins - $p1losses);
+          $p1elocalc2 = round($p1elocalc / ($p1wins + $p1losses));
+          $p2elocalc = $p2opprating + 400 * ($p2wins - $p2losses);
+          $p2elocalc2 = round($p2elocalc / ($p2wins + $p2losses));
+          $p3elocalc = $p3opprating + 400 * ($p3wins - $p3losses);
+          $p3elocalc2 = round($p3elocalc / ($p3wins + $p3losses));
+          $p4elocalc = $p4opprating + 400 * ($p4wins - $p4losses);
+          $p4elocalc2 = round($p4elocalc / ($p4wins + $p4losses));
+          // Update user data with new values
+
+          $p1data->field_losses->set($p1losses);
+          $p1data->field_wins->set($p1wins);
+          $p1data->field_ping_pong_rating->set($p1elocalc2);
+          $p1data->field_total_pp_opponents_rating->set($p1opprating);
+          $p1data->save();
+          $p2data->field_losses->set($p2losses);
+          $p2data->field_wins->set($p2wins);
+          $p2data->field_ping_pong_rating->set($p2elocalc2);
+          $p2data->field_total_pp_opponents_rating->set($p2opprating);
+          $p2data->save();
+          $p3data->field_wins->set($p3wins);
+          $p3data->field_losses->set($p3losses);
+          $p3data->field_ping_pong_rating->set($p3elocalc2);
+          $p3data->field_total_pp_opponents_rating->set($p3opprating);
+          $p3data->save();
+          $p4data->field_losses->set($p4losses);
+          $p4data->field_wins->set($p4wins);
+          $p4data->field_ping_pong_rating->set($p4elocalc2);
+          $p4data->field_total_pp_opponents_rating->set($p4opprating);
+          $p4data->save();
+      }
+      // Check if match submitted was foosball doubles
+      elseif ($gt[0]['tid'] == 11) {
+          $p2 = $node->field_player2[LANGUAGE_NONE][0]['target_id'];
+          $p4 = $node->field_player4[LANGUAGE_NONE][0]['target_id'];
+          // Pull data for users foosball rating, total opponent rating, wins, and losses
+          $p1data = entity_metadata_wrapper('user', $p1);
+          $p2data = entity_metadata_wrapper('user', $p2);
+          $p3data = entity_metadata_wrapper('user', $p3);
+          $p4data = entity_metadata_wrapper('user', $p4);
+          $p1rating = $p1data->field_foosball_rating->value();
+          $p1opprating = $p1data->field_total_fb_opponents_rating->value();
+          $p1wins = $p1data->field_foosball_wins->value();
+          $p1losses = $p1data->field_foosball_losses->value();
+          $p2rating = $p2data->field_foosball_rating->value();
+          $p2opprating = $p2data->field_total_fb_opponents_rating->value();
+          $p2wins = $p2data->field_foosball_wins->value();
+          $p2losses = $p2data->field_foosball_losses->value();
+          $p3rating = $p3data->field_foosball_rating->value();
+          $p3opprating = $p3data->field_total_fb_opponents_rating->value();
+          $p3wins = $p3data->field_foosball_wins->value();
+          $p3losses = $p3data->field_foosball_losses->value();
+          $p4rating = $p4data->field_foosball_rating->value();
+          $p4opprating = $p4data->field_total_fb_opponents_rating->value();
+          $p4wins = $p4data->field_foosball_wins->value();
+          $p4losses = $p4data->field_foosball_losses->value();
+          $team1opprating = round(($p3rating + $p4rating) / 2);
+          $team2opprating = round(($p1rating + $p2rating) / 2);
+          $p1opprating = $p1opprating + $team2opprating;
+          $p2opprating = $p2opprating + $team2opprating;
+          $p3opprating = $p3opprating + $team1opprating;
+          $p4opprating = $p4opprating + $team1opprating;
+
+
+          // Adjust wins and losses based on the scores of the match
+          if ($p1score > $p3score) {
+              $p1wins = $p1wins + 1;
+              $p2wins = $p2wins + 1;
+              $p3losses = $p3losses +1;
+              $p4losses = $p4losses +1;
+          }
+          elseif ($p3score > $p1score) {
+              $p3wins = $p3wins +1;
+              $p4wins = $p4wins +1;
+              $p1losses = $p1losses +1;
+              $p2losses = $p2losses +1;
+          }
+          else {
+              watchdog('elo_calculation', 'Player entered foosball match that resulted in a tie');
+              drupal_set_message('Error saving match: There is no crying in baseball...er...tying in foosball', 'warning');
+              drupal_goto('node/add/match');
+          }
+          // Calculate the players ELO based on each others ELO and past matches
+          $p1elocalc = $p1opprating + 400 * ($p1wins - $p1losses);
+          $p1elocalc2 = round($p1elocalc / ($p1wins + $p1losses));
+          $p2elocalc = $p2opprating + 400 * ($p2wins - $p2losses);
+          $p2elocalc2 = round($p2elocalc / ($p2wins + $p2losses));
+          $p3elocalc = $p3opprating + 400 * ($p3wins - $p3losses);
+          $p3elocalc2 = round($p3elocalc / ($p3wins + $p3losses));
+          $p4elocalc = $p4opprating + 400 * ($p4wins - $p4losses);
+          $p4elocalc2 = round($p4elocalc / ($p4wins + $p4losses));
+          // Update user data with new values
+
+          $p1data->field_foosball_losses->set($p1losses);
+          $p1data->field_foosball_wins->set($p1wins);
+          $p1data->field_foosball_rating->set($p1elocalc2);
+          $p1data->field_total_fb_opponents_rating->set($p1opprating);
+          $p1data->save();
+          $p2data->field_foosball_losses->set($p2losses);
+          $p2data->field_foosball_wins->set($p2wins);
+          $p2data->field_foosball_rating->set($p2elocalc2);
+          $p2data->field_total_fb_opponents_rating->set($p2opprating);
+          $p2data->save();
+          $p3data->field_foosball_wins->set($p3wins);
+          $p3data->field_foosball_losses->set($p3losses);
+          $p3data->field_foosball_rating->set($p3elocalc2);
+          $p3data->field_total_fb_opponents_rating->set($p3opprating);
+          $p3data->save();
+          $p4data->field_foosball_losses->set($p4losses);
+          $p4data->field_foosball_wins->set($p4wins);
+          $p4data->field_foosball_rating->set($p4elocalc2);
+          $p4data->field_total_fb_opponents_rating->set($p4opprating);
+          $p4data->save();
+      }
+      else {
+          watchdog('elo_calculation', 'Match type did not fall into ping pong or foosball');
+          drupal_set_message('Error saving match: Not sure how you got here, but if you could please email nick.delrossi or danny.willford we will look into it. Sorry for the inconvenience!', 'error');
+          drupal_goto('node/add/match');
+      }
+  }
+}

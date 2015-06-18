@@ -1,0 +1,4 @@
+name = Custom Functions
+description = Various custom functions for the website
+core = 7.x
+package = Custom
