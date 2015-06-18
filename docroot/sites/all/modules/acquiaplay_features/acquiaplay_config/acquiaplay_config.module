@@ -1,0 +1,7 @@
+<?php
+/**
+ * @file
+ * Code for the acquiaplay_config feature.
+ */
+
+include_once 'acquiaplay_config.features.inc';
