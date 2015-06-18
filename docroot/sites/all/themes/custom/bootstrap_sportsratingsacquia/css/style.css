@@ -12,3 +12,32 @@
   height: 350px;
   background: url(../images/cover.jpg) no-repeat scroll 50% 0 / cover transparent;
 }
+
+
+/*
+ * USER PROFILE
+ */
+
+.user-row {
+    margin-bottom: 14px;
+}
+
+.user-row:last-child {
+  margin-bottom: 0;
+ }
+
+.table-user-information > tbody > tr {
+  border-top: 1px solid rgb(221, 221, 221);
+}
+
+.table-user-information > tbody > tr:first-child {
+  border-top: 0;
+}
+
+.table-user-information > tbody > tr > td {
+  border-top: 0;
+}
+
+.toppad {
+  margin-top: 20px;
+}
