@@ -1,0 +1,7 @@
+<?php
+/**
+ * @file
+ * Code for the acquiaplay_views feature.
+ */
+
+include_once 'acquiaplay_views.features.inc';
