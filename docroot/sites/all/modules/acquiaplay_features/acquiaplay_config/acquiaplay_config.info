@@ -1,6 +1,8 @@
 name = acquiaplay_config
 core = 7.x
 package = Features
+dependencies[] = custom_functions
+dependencies[] = elo_calculation
 dependencies[] = hybridauth
 dependencies[] = strongarm
 features[ctools][] = strongarm:strongarm:1
