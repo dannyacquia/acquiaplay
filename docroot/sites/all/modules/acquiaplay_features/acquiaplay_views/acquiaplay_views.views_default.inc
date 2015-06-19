@@ -308,10 +308,12 @@ function acquiaplay_views_views_default_views() {
   $handler->display->display_options['fields']['title']['field'] = 'title';
   $handler->display->display_options['fields']['title']['alter']['word_boundary'] = FALSE;
   $handler->display->display_options['fields']['title']['alter']['ellipsis'] = FALSE;
+  $handler->display->display_options['fields']['title']['link_to_node'] = FALSE;
   /* Field: Content: Game Type */
   $handler->display->display_options['fields']['field_game_type']['id'] = 'field_game_type';
   $handler->display->display_options['fields']['field_game_type']['table'] = 'field_data_field_game_type';
   $handler->display->display_options['fields']['field_game_type']['field'] = 'field_game_type';
+  $handler->display->display_options['fields']['field_game_type']['type'] = 'taxonomy_term_reference_plain';
   /* Field: Content: Team One Score */
   $handler->display->display_options['fields']['field_player1_score']['id'] = 'field_player1_score';
   $handler->display->display_options['fields']['field_player1_score']['table'] = 'field_data_field_player1_score';
@@ -347,6 +349,32 @@ function acquiaplay_views_views_default_views() {
   $handler->display->display_options['filters']['type']['value'] = array(
     'match' => 'match',
   );
+  /* Filter criterion: Content: Game Type (field_game_type) */
+  $handler->display->display_options['filters']['field_game_type_tid']['id'] = 'field_game_type_tid';
+  $handler->display->display_options['filters']['field_game_type_tid']['table'] = 'field_data_field_game_type';
+  $handler->display->display_options['filters']['field_game_type_tid']['field'] = 'field_game_type_tid';
+  $handler->display->display_options['filters']['field_game_type_tid']['value'] = '';
+  $handler->display->display_options['filters']['field_game_type_tid']['exposed'] = TRUE;
+  $handler->display->display_options['filters']['field_game_type_tid']['expose']['operator_id'] = 'field_game_type_tid_op';
+  $handler->display->display_options['filters']['field_game_type_tid']['expose']['label'] = 'Game Type';
+  $handler->display->display_options['filters']['field_game_type_tid']['expose']['operator'] = 'field_game_type_tid_op';
+  $handler->display->display_options['filters']['field_game_type_tid']['expose']['identifier'] = 'field_game_type_tid';
+  $handler->display->display_options['filters']['field_game_type_tid']['expose']['remember_roles'] = array(
+    2 => '2',
+    1 => 0,
+    11 => 0,
+  );
+  $handler->display->display_options['filters']['field_game_type_tid']['group_info']['label'] = 'Game Type (field_game_type)';
+  $handler->display->display_options['filters']['field_game_type_tid']['group_info']['identifier'] = 'field_game_type_tid';
+  $handler->display->display_options['filters']['field_game_type_tid']['group_info']['remember'] = FALSE;
+  $handler->display->display_options['filters']['field_game_type_tid']['group_info']['group_items'] = array(
+    1 => array(),
+    2 => array(),
+    3 => array(),
+  );
+  $handler->display->display_options['filters']['field_game_type_tid']['type'] = 'select';
+  $handler->display->display_options['filters']['field_game_type_tid']['vocabulary'] = 'type_of_game';
+  $handler->display->display_options['filters']['field_game_type_tid']['hierarchy'] = 1;
 
   /* Display: Page */
   $handler = $view->new_display('page', 'Page', 'page');
