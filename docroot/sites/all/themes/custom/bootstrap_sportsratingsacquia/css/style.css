@@ -18,14 +18,20 @@
  */
 
 .welcome {
+  margin-top: -15px;
   margin-right: 0px;
   margin-left: -15px;
   text-align: center;
 }
 
+.welcome-message {
+  margin-top: -10px;
+  margin-bottom: 20px;
+}
+
 .box {
   border-radius: 3px;
-  padding: 10px 35px 0px 35px;
+  padding: 10px 20px;
   display: block;
 }
 
@@ -38,11 +44,11 @@
 .info > p {
   color: #717171;
   font-size: 16px;
-  padding-top: 10px;
   text-align: justify;
 }
 
 .info > a {
+  margin-top: 5px;
   background-color: #03a9f4;
   border-radius: 2px;
   box-shadow: 0 2px 5px 0 rgba(0, 0, 0, 0.16), 0 2px 10px 0 rgba(0, 0, 0, 0.12);
@@ -83,4 +89,12 @@
 
 .toppad {
   margin-top: 20px;
+}
+
+/*
+ * FOOTER
+ */
+
+.footer {
+  margin-top: 35px;
 }

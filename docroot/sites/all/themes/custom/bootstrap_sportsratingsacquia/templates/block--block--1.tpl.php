@@ -2,14 +2,15 @@
 // @TODO Need to move data into variables
 ?>
 
+<h2 class="text-center welcome-message">Welcome to Acquia Play</h2>
+
 <div class="container welcome">
-    <div class="row">
+    <div class="row col-lg-10 col-lg-offset-1">
         <div class="col-xs-12 col-sm-12 col-md-4 col-lg-4">
             <div class="box">
                 <div class="info">
                     <h4 class="text-center">Sign In</h4>
-                    <p>Lorem ipsum dolor sit amet, consectetur adipisicing elit. Corrupti atque, tenetur quam aspernatur corporis at explicabo nulla dolore necessitatibus doloremque exercitationem sequi dolorem architecto perferendis quas aperiam debitis dolor soluta!</p>
-                    <a href="" class="btn">Link</a>
+                    <p>Sign in with your Acquia Google account. You will need an acquia.com email address to use this site.</p>
                 </div>
             </div>
         </div>
@@ -18,8 +19,7 @@
             <div class="box">
                 <div class="info">
                     <h4 class="text-center">Play</h4>
-                    <p>Lorem ipsum dolor sit amet, consectetur adipisicing elit. Corrupti atque, tenetur quam aspernatur corporis at explicabo nulla dolore necessitatibus doloremque exercitationem sequi dolorem architecto perferendis quas aperiam debitis dolor soluta!</p>
-                    <a href="" class="btn">Link</a>
+                    <p>Find someone on the leaderboards and challenge them to a ping pong or foosball game.</p>
                 </div>
             </div>
         </div>
@@ -28,8 +28,7 @@
             <div class="box">
                 <div class="info">
                     <h4 class="text-center">Post</h4>
-                    <p>Lorem ipsum dolor sit amet, consectetur adipisicing elit. Corrupti atque, tenetur quam aspernatur corporis at explicabo nulla dolore necessitatibus doloremque exercitationem sequi dolorem architecto perferendis quas aperiam debitis dolor soluta!</p>
-                    <a href="" class="btn">Link</a>
+                    <p>When your game is complete the winner should click the link below and post the results of the match.</p>
                 </div>
             </div>
         </div>
