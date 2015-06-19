@@ -28,7 +28,7 @@
             <div class="box">
                 <div class="info">
                     <h4 class="text-center">Post</h4>
-                    <p>When your game is complete the winner should click the link below and post the results of the match.</p>
+                    <p>When your game is complete the winner should click the "Post match results" button on the leaderboard pages.</p>
                 </div>
             </div>
         </div>
