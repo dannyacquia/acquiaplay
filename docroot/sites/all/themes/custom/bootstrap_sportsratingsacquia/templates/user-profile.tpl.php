@@ -12,7 +12,7 @@
                 </tr>
                 <tr>
                   <td>Email:</td>
-                  <td></td>
+                  <td><?php print render($user_profile['mail']) ?></td>
                 </tr>
                 <tr>
                   <td><h3>Ping Pong</h3></td>
