@@ -32,6 +32,10 @@ function elo_calculation_node_presave($node) {
           $p3losses = $p3data->field_losses->value();
           $p1opprating = $p1opprating + $p3rating;
           $p3opprating = $p3opprating + $p1rating;
+          $p1totgames = $p1->field_total_games_played->value();
+          $p3totgames = $p3->field_total_games_played->value();
+          $p1totgames = $p1totgames + 1;
+          $p3totgames = $p3totgames + 1;
 
         // Adjust wins and losses based on the scores of the match
           if ($p1score > $p3score) {
@@ -58,11 +62,13 @@ function elo_calculation_node_presave($node) {
           $p1data->field_wins->set($p1wins);
           $p1data->field_ping_pong_rating->set($p1elocalc2);
           $p1data->field_total_pp_opponents_rating->set($p1opprating);
+          $p1data->field_total_games_played->set($p1totgames);
           $p1data->save();
           $p3data->field_wins->set($p3wins);
           $p3data->field_losses->set($p3losses);
           $p3data->field_ping_pong_rating->set($p3elocalc2);
           $p3data->field_total_pp_opponents_rating->set($p3opprating);
+          $p3data->field_total_games_played->set($p3totgames);
           $p3data->save();
       }
       // Check if match submitted was foosball
@@ -80,6 +86,10 @@ function elo_calculation_node_presave($node) {
           $p3losses = $p3data->field_foosball_losses->value();
           $p1opprating = $p1opprating + $p3rating;
           $p3opprating = $p3opprating + $p1rating;
+          $p1totgames = $p1->field_total_games_played->value();
+          $p3totgames = $p3->field_total_games_played->value();
+          $p1totgames = $p1totgames + 1;
+          $p3totgames = $p3totgames + 1;
 
           // Adjust wins and losses based on the scores of the match
           if ($p1score > $p3score) {
@@ -106,11 +116,13 @@ function elo_calculation_node_presave($node) {
           $p1data->field_foosball_wins->set($p1wins);
           $p1data->field_foosball_rating->set($p1elocalc2);
           $p1data->field_total_fb_opponents_rating->set($p1opprating);
+          $p1data->field_total_games_played->set($p1totgames);
           $p1data->save();
           $p3data->field_foosball_wins->set($p3wins);
           $p3data->field_foosball_losses->set($p3losses);
           $p3data->field_foosball_rating->set($p3elocalc2);
           $p3data->field_total_fb_opponents_rating->set($p3opprating);
+          $p3data->field_total_games_played->set($p3totgames);
           $p3data->save();
       }
       // Check if match submitted was ping pong doubles
@@ -144,6 +156,14 @@ function elo_calculation_node_presave($node) {
           $p2opprating = $p2opprating + $team2opprating;
           $p3opprating = $p3opprating + $team1opprating;
           $p4opprating = $p4opprating + $team1opprating;
+          $p1totgames = $p1data->field_total_games_played->value();
+          $p2totgames = $p2data->field_total_games_played->value();
+          $p3totgames = $p3data->field_total_games_played->value();
+          $p4totgames = $p4data->field_total_games_played->value();
+          $p1totgames = $p1totgames +1;
+          $p2totgames = $p2totgames +1;
+          $p3totgames = $p3totgames +1;
+          $p4totgames = $p4totgames +1;
 
 
           // Adjust wins and losses based on the scores of the match
@@ -179,21 +199,25 @@ function elo_calculation_node_presave($node) {
           $p1data->field_wins->set($p1wins);
           $p1data->field_ping_pong_rating->set($p1elocalc2);
           $p1data->field_total_pp_opponents_rating->set($p1opprating);
+          $p1data->field_total_games_played->set($p1data);
           $p1data->save();
           $p2data->field_losses->set($p2losses);
           $p2data->field_wins->set($p2wins);
           $p2data->field_ping_pong_rating->set($p2elocalc2);
+          $p2data->field_total_games_played->set($p2data);
           $p2data->field_total_pp_opponents_rating->set($p2opprating);
           $p2data->save();
           $p3data->field_wins->set($p3wins);
           $p3data->field_losses->set($p3losses);
           $p3data->field_ping_pong_rating->set($p3elocalc2);
           $p3data->field_total_pp_opponents_rating->set($p3opprating);
+          $p3data->field_total_games_played->set($p3data);
           $p3data->save();
           $p4data->field_losses->set($p4losses);
           $p4data->field_wins->set($p4wins);
           $p4data->field_ping_pong_rating->set($p4elocalc2);
           $p4data->field_total_pp_opponents_rating->set($p4opprating);
+          $p4data->field_total_games_played->set($p4data);
           $p4data->save();
       }
       // Check if match submitted was foosball doubles
@@ -227,6 +251,14 @@ function elo_calculation_node_presave($node) {
           $p2opprating = $p2opprating + $team2opprating;
           $p3opprating = $p3opprating + $team1opprating;
           $p4opprating = $p4opprating + $team1opprating;
+          $p1totgames = $p1data->field_total_games_played->value();
+          $p2totgames = $p2data->field_total_games_played->value();
+          $p3totgames = $p3data->field_total_games_played->value();
+          $p4totgames = $p4data->field_total_games_played->value();
+          $p1totgames = $p1totgames +1;
+          $p2totgames = $p2totgames +1;
+          $p3totgames = $p3totgames +1;
+          $p4totgames = $p4totgames +1;
 
 
           // Adjust wins and losses based on the scores of the match
@@ -262,21 +294,25 @@ function elo_calculation_node_presave($node) {
           $p1data->field_foosball_wins->set($p1wins);
           $p1data->field_foosball_rating->set($p1elocalc2);
           $p1data->field_total_fb_opponents_rating->set($p1opprating);
+          $p1data->field_total_games_played->set($p1data);
           $p1data->save();
           $p2data->field_foosball_losses->set($p2losses);
           $p2data->field_foosball_wins->set($p2wins);
           $p2data->field_foosball_rating->set($p2elocalc2);
           $p2data->field_total_fb_opponents_rating->set($p2opprating);
+          $p2data->field_total_games_played->set($p2data);
           $p2data->save();
           $p3data->field_foosball_wins->set($p3wins);
           $p3data->field_foosball_losses->set($p3losses);
           $p3data->field_foosball_rating->set($p3elocalc2);
           $p3data->field_total_fb_opponents_rating->set($p3opprating);
+          $p3data->field_total_games_played->set($p3data);
           $p3data->save();
           $p4data->field_foosball_losses->set($p4losses);
           $p4data->field_foosball_wins->set($p4wins);
           $p4data->field_foosball_rating->set($p4elocalc2);
           $p4data->field_total_fb_opponents_rating->set($p4opprating);
+          $p4data->field_total_games_played->set($p4data);
           $p4data->save();
       }
       else {
