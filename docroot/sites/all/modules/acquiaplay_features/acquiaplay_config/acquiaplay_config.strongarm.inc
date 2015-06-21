@@ -290,5 +290,19 @@ After that, you will be able to log in at [site:login-url] using your [user:hybr
   $strongarm->value = '100';
   $export['hybridauth_widget_weight'] = $strongarm;
 
+  $strongarm = new stdClass();
+  $strongarm->disabled = FALSE; /* Edit this to true to make a default strongarm disabled initially */
+  $strongarm->api_version = 1;
+  $strongarm->name = 'site_name';
+  $strongarm->value = 'Acquia Play';
+  $export['site_name'] = $strongarm;
+
+  $strongarm = new stdClass();
+  $strongarm->disabled = FALSE; /* Edit this to true to make a default strongarm disabled initially */
+  $strongarm->api_version = 1;
+  $strongarm->name = 'site_slogan';
+  $strongarm->value = 'Leaderboards for ping pong and foosball';
+  $export['site_slogan'] = $strongarm;
+
   return $export;
 }
