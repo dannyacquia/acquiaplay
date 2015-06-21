@@ -136,6 +136,13 @@ function acquiaplay_views_views_default_views() {
       'value' => 'Support',
     ),
   );
+  /* Filter criterion: User: Total FB Games Played (field_total_fb_games_played) */
+  $handler->display->display_options['filters']['field_total_fb_games_played_value']['id'] = 'field_total_fb_games_played_value';
+  $handler->display->display_options['filters']['field_total_fb_games_played_value']['table'] = 'field_data_field_total_fb_games_played';
+  $handler->display->display_options['filters']['field_total_fb_games_played_value']['field'] = 'field_total_fb_games_played_value';
+  $handler->display->display_options['filters']['field_total_fb_games_played_value']['operator'] = '>=';
+  $handler->display->display_options['filters']['field_total_fb_games_played_value']['value']['value'] = '5';
+  $handler->display->display_options['filters']['field_total_fb_games_played_value']['group'] = 2;
 
   /* Display: Page */
   $handler = $view->new_display('page', 'Page', 'page');
@@ -269,6 +276,13 @@ function acquiaplay_views_views_default_views() {
       'value' => 'Support',
     ),
   );
+  /* Filter criterion: User: Total Ping Pong Games Played (field_total_games_played) */
+  $handler->display->display_options['filters']['field_total_games_played_value']['id'] = 'field_total_games_played_value';
+  $handler->display->display_options['filters']['field_total_games_played_value']['table'] = 'field_data_field_total_games_played';
+  $handler->display->display_options['filters']['field_total_games_played_value']['field'] = 'field_total_games_played_value';
+  $handler->display->display_options['filters']['field_total_games_played_value']['operator'] = '>=';
+  $handler->display->display_options['filters']['field_total_games_played_value']['value']['value'] = '5';
+  $handler->display->display_options['filters']['field_total_games_played_value']['group'] = 2;
 
   /* Display: Page */
   $handler = $view->new_display('page', 'Page', 'page');
