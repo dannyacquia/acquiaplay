@@ -39,3 +39,12 @@ function custom_functions_form_user_register_form_alter(&$form, &$form_state, $f
         '#default_value' => (!$register ? $account->mail : ''),
     );
 }
+
+function custom_functions_user_presave(&$edit, $account, $category) {
+    $email = $account->mail;
+    if (strpos($email, '@acquia.com') === false) {
+        drupal_set_message('Only emails from acquia.com are accepted', 'error');
+        drupal_goto('');
+        die(var_dump($email));
+    }
+}
