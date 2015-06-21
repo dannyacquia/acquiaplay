@@ -306,6 +306,50 @@ function acquiaplay_user_field_default_field_instances() {
     ),
   );
 
+  // Exported field_instance: 'user-user-field_total_games_played'
+  $field_instances['user-user-field_total_games_played'] = array(
+    'bundle' => 'user',
+    'default_value' => array(
+      0 => array(
+        'value' => 0,
+      ),
+    ),
+    'deleted' => 0,
+    'description' => '',
+    'display' => array(
+      'default' => array(
+        'label' => 'above',
+        'module' => 'number',
+        'settings' => array(
+          'decimal_separator' => '.',
+          'prefix_suffix' => TRUE,
+          'scale' => 0,
+          'thousand_separator' => ' ',
+        ),
+        'type' => 'number_integer',
+        'weight' => 9,
+      ),
+    ),
+    'entity_type' => 'user',
+    'field_name' => 'field_total_games_played',
+    'label' => 'Total Games Played',
+    'required' => 0,
+    'settings' => array(
+      'max' => '',
+      'min' => 0,
+      'prefix' => '',
+      'suffix' => '',
+      'user_register_form' => 0,
+    ),
+    'widget' => array(
+      'active' => 0,
+      'module' => 'number',
+      'settings' => array(),
+      'type' => 'number',
+      'weight' => 10,
+    ),
+  );
+
   // Exported field_instance: 'user-user-field_total_pp_opponents_rating'
   $field_instances['user-user-field_total_pp_opponents_rating'] = array(
     'bundle' => 'user',
@@ -398,6 +442,7 @@ function acquiaplay_user_field_default_field_instances() {
   t('Ping Pong Rating');
   t('Ping Pong Wins');
   t('Total FB Opponents Rating');
+  t('Total Games Played');
   t('Total PP Opponents Rating');
 
   return $field_instances;
