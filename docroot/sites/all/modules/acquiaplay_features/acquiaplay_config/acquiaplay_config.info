@@ -1,6 +1,7 @@
 name = acquiaplay_config
 core = 7.x
 package = Features
+dependencies[] = ctools
 dependencies[] = custom_functions
 dependencies[] = elo_calculation
 dependencies[] = hybridauth
@@ -39,3 +40,5 @@ features[variable][] = hybridauth_widget_title
 features[variable][] = hybridauth_widget_type
 features[variable][] = hybridauth_widget_use_overlay
 features[variable][] = hybridauth_widget_weight
+features[variable][] = site_name
+features[variable][] = site_slogan

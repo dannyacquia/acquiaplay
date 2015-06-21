@@ -6,7 +6,7 @@
   <div class="row">
     <div class="col-lg-12">
       <div class="well text-center">
-        <strong><?php print variable_get('site_slogan', 'Welcome to Acquia Play - Leaderboards for ping pong and foosball'); ?></strong>
+        <strong>Welcome to <?php print variable_get('site_name') ?> - <?php print variable_get('site_slogan'); ?></strong>
       </div>
     </div>
   </div>
