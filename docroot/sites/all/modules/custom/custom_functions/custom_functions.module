@@ -40,15 +40,19 @@ function custom_functions_form_user_register_form_alter(&$form, &$form_state, $f
     );
 }
 
-/*function custom_functions_user_presave(&$edit, $account, $category) {
-    $email = $account->mail;
-    die($email);
-    if (strpos($email, '@acquia.com') === false) {
-        drupal_set_message('Only emails from acquia.com are accepted', 'error');
-        drupal_goto('');
-        die(var_dump($email));
-    }
-}*/
+function custom_functions_hybridauth_user_preinsert($account, $data) {
+    $domains = 'acquia.com';
 
+    if(isset($domains)) {
+
+        $userEmailDomain = explode("@", $data["email"]);
+        if($userEmailDomain[1] != $domains) {
+            module_load_include("inc", "hybridauth", "hybridauth.pages");
+            drupal_set_message("Only users with valid emails are allowed to register", "error");
+            session_destroy();
+            _hybridauth_window_close();
+        }
+    }
+}
 
 
