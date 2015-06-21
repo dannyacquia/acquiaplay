@@ -124,6 +124,24 @@ function acquiaplay_user_field_default_field_bases() {
     'type' => 'number_integer',
   );
 
+  // Exported field_base: 'field_total_fb_games_played'
+  $field_bases['field_total_fb_games_played'] = array(
+    'active' => 1,
+    'cardinality' => 1,
+    'deleted' => 0,
+    'entity_types' => array(),
+    'field_name' => 'field_total_fb_games_played',
+    'field_permissions' => array(
+      'type' => 2,
+    ),
+    'indexes' => array(),
+    'locked' => 0,
+    'module' => 'number',
+    'settings' => array(),
+    'translatable' => 0,
+    'type' => 'number_integer',
+  );
+
   // Exported field_base: 'field_total_fb_opponents_rating'
   $field_bases['field_total_fb_opponents_rating'] = array(
     'active' => 1,
