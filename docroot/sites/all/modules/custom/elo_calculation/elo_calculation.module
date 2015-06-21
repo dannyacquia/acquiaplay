@@ -256,7 +256,7 @@ function elo_calculation_node_presave($node) {
           $p1totfbgames = $p1totfbgames + 1;
           $p3totfbgames = $p3totfbgames + 1;
           $p2totfbgames = $p2data->field_total_fb_games_played->value();
-          $p3totfbgames = $p4data->field_total_fb_games_played->value();
+          $p4totfbgames = $p4data->field_total_fb_games_played->value();
           $p2totfbgames = $p2totfbgames + 1;
           $p4totfbgames = $p4totfbgames + 1;
 
