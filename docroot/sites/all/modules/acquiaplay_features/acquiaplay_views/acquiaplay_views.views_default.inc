@@ -36,7 +36,6 @@ function acquiaplay_views_views_default_views() {
   $handler->display->display_options['header']['area']['id'] = 'area';
   $handler->display->display_options['header']['area']['table'] = 'views';
   $handler->display->display_options['header']['area']['field'] = 'area';
-  $handler->display->display_options['header']['area']['content'] = '<a class="btn btn-success button-post-match" href="node/add/match" role="button">Post match results</a>';
   $handler->display->display_options['header']['area']['format'] = 'full_html';
   /* Field: User: Name */
   $handler->display->display_options['fields']['name']['id'] = 'name';
@@ -175,8 +174,6 @@ function acquiaplay_views_views_default_views() {
   $handler->display->display_options['header']['area']['id'] = 'area';
   $handler->display->display_options['header']['area']['table'] = 'views';
   $handler->display->display_options['header']['area']['field'] = 'area';
-  $handler->display->display_options['header']['area']['content'] = '<a class="btn btn-success button-post-match" href="node/add/match" role="button">Post match results</a>
-';
   $handler->display->display_options['header']['area']['format'] = 'full_html';
   /* Field: User: Name */
   $handler->display->display_options['fields']['name']['id'] = 'name';
