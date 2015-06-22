@@ -81,8 +81,8 @@ After that, you will be able to log in at [site:login-url] using your [user:hybr
   $strongarm->api_version = 1;
   $strongarm->name = 'hybridauth_forms';
   $strongarm->value = array(
-    'user_login' => 'user_login',
-    'user_login_block' => 'user_login_block',
+    'user_login' => 0,
+    'user_login_block' => 0,
     'user_register_form' => 0,
     'comment_form' => 0,
   );
@@ -149,14 +149,14 @@ After that, you will be able to log in at [site:login-url] using your [user:hybr
   $strongarm->disabled = FALSE; /* Edit this to true to make a default strongarm disabled initially */
   $strongarm->api_version = 1;
   $strongarm->name = 'hybridauth_provider_Google_keys_id';
-  $strongarm->value = '864898287374-ibc5204bt3l24vc41g60i630mt1nnj5l.apps.googleusercontent.com';
+  $strongarm->value = '864898287374-qmppd48sunurkriadamfcuuij2t77eiq.apps.googleusercontent.com';
   $export['hybridauth_provider_Google_keys_id'] = $strongarm;
 
   $strongarm = new stdClass();
   $strongarm->disabled = FALSE; /* Edit this to true to make a default strongarm disabled initially */
   $strongarm->api_version = 1;
   $strongarm->name = 'hybridauth_provider_Google_keys_secret';
-  $strongarm->value = '8rwfSLOYqgYLQwVnwCP-BvvX';
+  $strongarm->value = 'OmWxhOrucTOrVGljDEbEopok';
   $export['hybridauth_provider_Google_keys_secret'] = $strongarm;
 
   $strongarm = new stdClass();

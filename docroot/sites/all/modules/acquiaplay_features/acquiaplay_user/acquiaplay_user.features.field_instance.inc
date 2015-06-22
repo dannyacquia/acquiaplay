@@ -13,19 +13,15 @@ function acquiaplay_user_field_default_field_instances() {
   // Exported field_instance: 'user-user-field_department'
   $field_instances['user-user-field_department'] = array(
     'bundle' => 'user',
-    'default_value' => array(
-      0 => array(
-        'value' => 'Acquia',
-      ),
-    ),
+    'default_value' => NULL,
     'deleted' => 0,
     'description' => '',
     'display' => array(
       'default' => array(
         'label' => 'above',
-        'module' => 'text',
+        'module' => 'taxonomy',
         'settings' => array(),
-        'type' => 'text_default',
+        'type' => 'taxonomy_term_reference_link',
         'weight' => 0,
       ),
     ),
@@ -34,16 +30,16 @@ function acquiaplay_user_field_default_field_instances() {
     'label' => 'Department',
     'required' => 1,
     'settings' => array(
-      'text_processing' => 0,
       'user_register_form' => 1,
     ),
     'widget' => array(
-      'active' => 1,
-      'module' => 'text',
+      'active' => 0,
+      'module' => 'taxonomy',
       'settings' => array(
+        'autocomplete_path' => 'taxonomy/autocomplete',
         'size' => 60,
       ),
-      'type' => 'text_textfield',
+      'type' => 'taxonomy_autocomplete',
       'weight' => 1,
     ),
   );
@@ -289,7 +285,7 @@ function acquiaplay_user_field_default_field_instances() {
           'thousand_separator' => ' ',
         ),
         'type' => 'number_integer',
-        'weight' => 10,
+        'weight' => 8,
       ),
     ),
     'entity_type' => 'user',
@@ -327,7 +323,7 @@ function acquiaplay_user_field_default_field_instances() {
         'label' => 'above',
         'settings' => array(),
         'type' => 'hidden',
-        'weight' => 8,
+        'weight' => 11,
       ),
     ),
     'entity_type' => 'user',
@@ -371,7 +367,7 @@ function acquiaplay_user_field_default_field_instances() {
           'thousand_separator' => ' ',
         ),
         'type' => 'number_integer',
-        'weight' => 9,
+        'weight' => 7,
       ),
     ),
     'entity_type' => 'user',
@@ -409,7 +405,7 @@ function acquiaplay_user_field_default_field_instances() {
         'label' => 'above',
         'settings' => array(),
         'type' => 'hidden',
-        'weight' => 7,
+        'weight' => 10,
       ),
     ),
     'entity_type' => 'user',

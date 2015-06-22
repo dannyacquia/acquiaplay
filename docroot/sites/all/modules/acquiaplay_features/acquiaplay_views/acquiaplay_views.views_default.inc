@@ -43,6 +43,13 @@ function acquiaplay_views_views_default_views() {
   $handler->display->display_options['fields']['name']['field'] = 'name';
   $handler->display->display_options['fields']['name']['alter']['word_boundary'] = FALSE;
   $handler->display->display_options['fields']['name']['alter']['ellipsis'] = FALSE;
+  /* Field: User: Department */
+  $handler->display->display_options['fields']['field_department']['id'] = 'field_department';
+  $handler->display->display_options['fields']['field_department']['table'] = 'field_data_field_department';
+  $handler->display->display_options['fields']['field_department']['field'] = 'field_department';
+  $handler->display->display_options['fields']['field_department']['click_sort_column'] = 'value';
+  $handler->display->display_options['fields']['field_department']['type'] = 'text_default';
+  $handler->display->display_options['fields']['field_department']['group_column'] = 'value';
   /* Field: User: Foosball Wins */
   $handler->display->display_options['fields']['field_foosball_wins']['id'] = 'field_foosball_wins';
   $handler->display->display_options['fields']['field_foosball_wins']['table'] = 'field_data_field_foosball_wins';
@@ -102,46 +109,28 @@ function acquiaplay_views_views_default_views() {
   $handler->display->display_options['filters']['field_foosball_losses_value']['value']['value'] = '0';
   $handler->display->display_options['filters']['field_foosball_losses_value']['group'] = 1;
   /* Filter criterion: User: Department (field_department) */
-  $handler->display->display_options['filters']['field_department_value']['id'] = 'field_department_value';
-  $handler->display->display_options['filters']['field_department_value']['table'] = 'field_data_field_department';
-  $handler->display->display_options['filters']['field_department_value']['field'] = 'field_department_value';
-  $handler->display->display_options['filters']['field_department_value']['group'] = 2;
-  $handler->display->display_options['filters']['field_department_value']['exposed'] = TRUE;
-  $handler->display->display_options['filters']['field_department_value']['expose']['operator_id'] = 'field_department_value_op';
-  $handler->display->display_options['filters']['field_department_value']['expose']['label'] = 'Department (field_department)';
-  $handler->display->display_options['filters']['field_department_value']['expose']['operator'] = 'field_department_value_op';
-  $handler->display->display_options['filters']['field_department_value']['expose']['identifier'] = 'field_department_value';
-  $handler->display->display_options['filters']['field_department_value']['is_grouped'] = TRUE;
-  $handler->display->display_options['filters']['field_department_value']['group_info']['label'] = 'Department';
-  $handler->display->display_options['filters']['field_department_value']['group_info']['identifier'] = 'field_department_value';
-  $handler->display->display_options['filters']['field_department_value']['group_info']['group_items'] = array(
-    1 => array(
-      'title' => 'BETA',
-      'operator' => '=',
-      'value' => 'BETA',
-    ),
-    2 => array(
-      'title' => 'Sales',
-      'operator' => '=',
-      'value' => 'Sales',
-    ),
-    3 => array(
-      'title' => 'AcquiaU',
-      'operator' => '=',
-      'value' => 'AcquiaU',
-    ),
-    5 => array(
-      'title' => 'Support',
-      'operator' => '=',
-      'value' => 'Support',
-    ),
+  $handler->display->display_options['filters']['field_department_tid']['id'] = 'field_department_tid';
+  $handler->display->display_options['filters']['field_department_tid']['table'] = 'field_data_field_department';
+  $handler->display->display_options['filters']['field_department_tid']['field'] = 'field_department_tid';
+  $handler->display->display_options['filters']['field_department_tid']['group'] = 2;
+  $handler->display->display_options['filters']['field_department_tid']['exposed'] = TRUE;
+  $handler->display->display_options['filters']['field_department_tid']['expose']['operator_id'] = 'field_department_tid_op';
+  $handler->display->display_options['filters']['field_department_tid']['expose']['label'] = 'Department';
+  $handler->display->display_options['filters']['field_department_tid']['expose']['operator'] = 'field_department_tid_op';
+  $handler->display->display_options['filters']['field_department_tid']['expose']['identifier'] = 'field_department_tid';
+  $handler->display->display_options['filters']['field_department_tid']['expose']['remember_roles'] = array(
+    2 => '2',
+    1 => 0,
+    11 => 0,
   );
+  $handler->display->display_options['filters']['field_department_tid']['type'] = 'select';
+  $handler->display->display_options['filters']['field_department_tid']['vocabulary'] = 'department';
   /* Filter criterion: User: Total FB Games Played (field_total_fb_games_played) */
   $handler->display->display_options['filters']['field_total_fb_games_played_value']['id'] = 'field_total_fb_games_played_value';
   $handler->display->display_options['filters']['field_total_fb_games_played_value']['table'] = 'field_data_field_total_fb_games_played';
   $handler->display->display_options['filters']['field_total_fb_games_played_value']['field'] = 'field_total_fb_games_played_value';
   $handler->display->display_options['filters']['field_total_fb_games_played_value']['operator'] = '>=';
-  $handler->display->display_options['filters']['field_total_fb_games_played_value']['value']['value'] = '5';
+  $handler->display->display_options['filters']['field_total_fb_games_played_value']['value']['value'] = '3';
   $handler->display->display_options['filters']['field_total_fb_games_played_value']['group'] = 2;
 
   /* Display: Page */
@@ -188,6 +177,10 @@ function acquiaplay_views_views_default_views() {
   $handler->display->display_options['fields']['name']['field'] = 'name';
   $handler->display->display_options['fields']['name']['alter']['word_boundary'] = FALSE;
   $handler->display->display_options['fields']['name']['alter']['ellipsis'] = FALSE;
+  /* Field: User: Department */
+  $handler->display->display_options['fields']['field_department']['id'] = 'field_department';
+  $handler->display->display_options['fields']['field_department']['table'] = 'field_data_field_department';
+  $handler->display->display_options['fields']['field_department']['field'] = 'field_department';
   /* Field: User: Ping Pong Wins */
   $handler->display->display_options['fields']['field_wins']['id'] = 'field_wins';
   $handler->display->display_options['fields']['field_wins']['table'] = 'field_data_field_wins';
@@ -247,41 +240,29 @@ function acquiaplay_views_views_default_views() {
   $handler->display->display_options['filters']['field_losses_value']['value']['value'] = '0';
   $handler->display->display_options['filters']['field_losses_value']['group'] = 1;
   /* Filter criterion: User: Department (field_department) */
-  $handler->display->display_options['filters']['field_department_value']['id'] = 'field_department_value';
-  $handler->display->display_options['filters']['field_department_value']['table'] = 'field_data_field_department';
-  $handler->display->display_options['filters']['field_department_value']['field'] = 'field_department_value';
-  $handler->display->display_options['filters']['field_department_value']['group'] = 2;
-  $handler->display->display_options['filters']['field_department_value']['exposed'] = TRUE;
-  $handler->display->display_options['filters']['field_department_value']['expose']['operator_id'] = 'field_department_value_op';
-  $handler->display->display_options['filters']['field_department_value']['expose']['label'] = 'Department (field_department)';
-  $handler->display->display_options['filters']['field_department_value']['expose']['operator'] = 'field_department_value_op';
-  $handler->display->display_options['filters']['field_department_value']['expose']['identifier'] = 'field_department_value';
-  $handler->display->display_options['filters']['field_department_value']['is_grouped'] = TRUE;
-  $handler->display->display_options['filters']['field_department_value']['group_info']['label'] = 'Department';
-  $handler->display->display_options['filters']['field_department_value']['group_info']['identifier'] = 'field_department_value';
-  $handler->display->display_options['filters']['field_department_value']['group_info']['group_items'] = array(
-    1 => array(
-      'title' => 'BETA',
-      'operator' => '=',
-      'value' => 'BETA',
-    ),
-    2 => array(
-      'title' => 'AcquiaU',
-      'operator' => '=',
-      'value' => 'AcquiaU',
-    ),
-    3 => array(
-      'title' => 'Support',
-      'operator' => '=',
-      'value' => 'Support',
-    ),
+  $handler->display->display_options['filters']['field_department_tid']['id'] = 'field_department_tid';
+  $handler->display->display_options['filters']['field_department_tid']['table'] = 'field_data_field_department';
+  $handler->display->display_options['filters']['field_department_tid']['field'] = 'field_department_tid';
+  $handler->display->display_options['filters']['field_department_tid']['value'] = '';
+  $handler->display->display_options['filters']['field_department_tid']['group'] = 2;
+  $handler->display->display_options['filters']['field_department_tid']['exposed'] = TRUE;
+  $handler->display->display_options['filters']['field_department_tid']['expose']['operator_id'] = 'field_department_tid_op';
+  $handler->display->display_options['filters']['field_department_tid']['expose']['label'] = 'Department';
+  $handler->display->display_options['filters']['field_department_tid']['expose']['operator'] = 'field_department_tid_op';
+  $handler->display->display_options['filters']['field_department_tid']['expose']['identifier'] = 'field_department_tid';
+  $handler->display->display_options['filters']['field_department_tid']['expose']['remember_roles'] = array(
+    2 => '2',
+    1 => 0,
+    11 => 0,
   );
+  $handler->display->display_options['filters']['field_department_tid']['type'] = 'select';
+  $handler->display->display_options['filters']['field_department_tid']['vocabulary'] = 'department';
   /* Filter criterion: User: Total Ping Pong Games Played (field_total_games_played) */
   $handler->display->display_options['filters']['field_total_games_played_value']['id'] = 'field_total_games_played_value';
   $handler->display->display_options['filters']['field_total_games_played_value']['table'] = 'field_data_field_total_games_played';
   $handler->display->display_options['filters']['field_total_games_played_value']['field'] = 'field_total_games_played_value';
   $handler->display->display_options['filters']['field_total_games_played_value']['operator'] = '>=';
-  $handler->display->display_options['filters']['field_total_games_played_value']['value']['value'] = '5';
+  $handler->display->display_options['filters']['field_total_games_played_value']['value']['value'] = '3';
   $handler->display->display_options['filters']['field_total_games_played_value']['group'] = 2;
 
   /* Display: Page */

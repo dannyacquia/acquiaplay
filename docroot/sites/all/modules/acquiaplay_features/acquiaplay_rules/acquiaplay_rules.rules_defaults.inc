@@ -12,6 +12,7 @@ function acquiaplay_rules_default_rules_configuration() {
   $items['rules_acquiaplay_only_allow_acquia_com_emails'] = entity_import('rules_config', '{ "rules_acquiaplay_only_allow_acquia_com_emails" : {
       "LABEL" : "Only allow acquia.com emails",
       "PLUGIN" : "reaction rule",
+      "ACTIVE" : false,
       "OWNER" : "rules",
       "REQUIRES" : [ "rules", "hybridauth" ],
       "ON" : { "hybridauth_user_preinsert" : [] },
