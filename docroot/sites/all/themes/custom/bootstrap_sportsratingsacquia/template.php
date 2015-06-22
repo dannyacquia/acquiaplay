@@ -18,6 +18,28 @@ function bootstrap_sportsratingsacquia_preprocess(&$variables) {
     );
 }
 
+function bootstrap_sportsratingsacquia_theme() {
+    $items = array();
+
+    $items['user_login'] = array(
+        'render element' => 'form',
+        'path' => drupal_get_path('theme', 'bootstrap_sportsratingsacquia') . '/templates',
+        'template' => 'user-login',
+        'preprocess functions' => array(
+            'bootstrap_sportsratingsacquia_preprocess_user_login'
+        ),
+    );
+
+    return $items;
+}
+
+function bootstrap_sportsratingsacquia_preprocess_user_login(&$vars) {
+    $vars['name'] = render($vars['form']['name']);
+    $vars['pass'] = render($vars['form']['pass']);
+    $vars['submit'] = render($vars['form']['actions']['submit']);
+    $vars['rendered'] = drupal_render_children($vars['form']);
+}
+
 /*
  * Implements template_preprocess_page
  */
