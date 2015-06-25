@@ -11,7 +11,8 @@
               </tr>
               <tr>
                 <td>Department:</td>
-                <td align="right"><?php print render($user_profile['field_department']['#items'][0][value]); ?></td>
+                <?php $department = taxonomy_term_load($user_profile['field_department']['#items'][0][tid]); ?>
+                <td align="right"><?php print $department->name ?></td>
               </tr>
               <tr>
                 <td><h3>Ping Pong</h3></td>
