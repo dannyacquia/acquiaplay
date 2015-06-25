@@ -5,7 +5,6 @@ dependencies[] = conditional_fields
 dependencies[] = ctools
 dependencies[] = entityreference
 dependencies[] = features
-dependencies[] = node
 dependencies[] = number
 dependencies[] = options
 dependencies[] = strongarm

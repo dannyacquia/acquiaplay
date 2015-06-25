@@ -133,11 +133,11 @@ function acquiaplay_match_field_default_field_instances() {
     ),
     'entity_type' => 'node',
     'field_name' => 'field_player1_score',
-    'label' => 'Team One Score',
+    'label' => 'Team One Wins',
     'required' => 1,
     'settings' => array(
       'max' => '',
-      'min' => 1,
+      'min' => 0,
       'prefix' => '',
       'suffix' => '',
       'user_register_form' => FALSE,
@@ -231,11 +231,11 @@ function acquiaplay_match_field_default_field_instances() {
     ),
     'entity_type' => 'node',
     'field_name' => 'field_player2_score',
-    'label' => 'Team Two Score',
+    'label' => 'Team Two Wins',
     'required' => 1,
     'settings' => array(
       'max' => '',
-      'min' => 1,
+      'min' => 0,
       'prefix' => '',
       'suffix' => '',
       'user_register_form' => FALSE,
@@ -359,9 +359,9 @@ function acquiaplay_match_field_default_field_instances() {
   t('Player2');
   t('Player4');
   t('Team One');
-  t('Team One Score');
+  t('Team One Wins');
   t('Team Two');
-  t('Team Two Score');
+  t('Team Two Wins');
 
   return $field_instances;
 }
