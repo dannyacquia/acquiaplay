@@ -49,6 +49,7 @@ function acquiaplay_views_views_default_views() {
   $handler->display->display_options['fields']['field_department']['field'] = 'field_department';
   $handler->display->display_options['fields']['field_department']['element_class'] = 'hidden-xs';
   $handler->display->display_options['fields']['field_department']['element_label_class'] = 'hidden-xs';
+  $handler->display->display_options['fields']['field_department']['type'] = 'taxonomy_term_reference_plain';
   $handler->display->display_options['fields']['field_department']['group_column'] = 'value';
   /* Field: User: Foosball Wins */
   $handler->display->display_options['fields']['field_foosball_wins']['id'] = 'field_foosball_wins';
@@ -183,6 +184,7 @@ function acquiaplay_views_views_default_views() {
   $handler->display->display_options['fields']['field_department']['field'] = 'field_department';
   $handler->display->display_options['fields']['field_department']['element_class'] = 'hidden-xs';
   $handler->display->display_options['fields']['field_department']['element_label_class'] = 'hidden-xs';
+  $handler->display->display_options['fields']['field_department']['type'] = 'taxonomy_term_reference_plain';
   /* Field: User: Ping Pong Wins */
   $handler->display->display_options['fields']['field_wins']['id'] = 'field_wins';
   $handler->display->display_options['fields']['field_wins']['table'] = 'field_data_field_wins';
