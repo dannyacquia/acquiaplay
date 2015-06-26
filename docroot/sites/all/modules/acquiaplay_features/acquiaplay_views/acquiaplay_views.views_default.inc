@@ -130,7 +130,7 @@ function acquiaplay_views_views_default_views() {
   $handler->display->display_options['filters']['field_total_fb_games_played_value']['table'] = 'field_data_field_total_fb_games_played';
   $handler->display->display_options['filters']['field_total_fb_games_played_value']['field'] = 'field_total_fb_games_played_value';
   $handler->display->display_options['filters']['field_total_fb_games_played_value']['operator'] = '>=';
-  $handler->display->display_options['filters']['field_total_fb_games_played_value']['value']['value'] = '3';
+  $handler->display->display_options['filters']['field_total_fb_games_played_value']['value']['value'] = '1';
   $handler->display->display_options['filters']['field_total_fb_games_played_value']['group'] = 2;
 
   /* Display: Page */
@@ -264,7 +264,7 @@ function acquiaplay_views_views_default_views() {
   $handler->display->display_options['filters']['field_total_games_played_value']['table'] = 'field_data_field_total_games_played';
   $handler->display->display_options['filters']['field_total_games_played_value']['field'] = 'field_total_games_played_value';
   $handler->display->display_options['filters']['field_total_games_played_value']['operator'] = '>=';
-  $handler->display->display_options['filters']['field_total_games_played_value']['value']['value'] = '3';
+  $handler->display->display_options['filters']['field_total_games_played_value']['value']['value'] = '1';
   $handler->display->display_options['filters']['field_total_games_played_value']['group'] = 2;
 
   /* Display: Page */
