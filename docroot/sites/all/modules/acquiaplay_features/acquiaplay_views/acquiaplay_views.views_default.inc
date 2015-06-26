@@ -47,8 +47,8 @@ function acquiaplay_views_views_default_views() {
   $handler->display->display_options['fields']['field_department']['id'] = 'field_department';
   $handler->display->display_options['fields']['field_department']['table'] = 'field_data_field_department';
   $handler->display->display_options['fields']['field_department']['field'] = 'field_department';
-  $handler->display->display_options['fields']['field_department']['click_sort_column'] = 'value';
-  $handler->display->display_options['fields']['field_department']['type'] = 'text_default';
+  $handler->display->display_options['fields']['field_department']['element_class'] = 'hidden-xs';
+  $handler->display->display_options['fields']['field_department']['element_label_class'] = 'hidden-xs';
   $handler->display->display_options['fields']['field_department']['group_column'] = 'value';
   /* Field: User: Foosball Wins */
   $handler->display->display_options['fields']['field_foosball_wins']['id'] = 'field_foosball_wins';
@@ -181,6 +181,8 @@ function acquiaplay_views_views_default_views() {
   $handler->display->display_options['fields']['field_department']['id'] = 'field_department';
   $handler->display->display_options['fields']['field_department']['table'] = 'field_data_field_department';
   $handler->display->display_options['fields']['field_department']['field'] = 'field_department';
+  $handler->display->display_options['fields']['field_department']['element_class'] = 'hidden-xs';
+  $handler->display->display_options['fields']['field_department']['element_label_class'] = 'hidden-xs';
   /* Field: User: Ping Pong Wins */
   $handler->display->display_options['fields']['field_wins']['id'] = 'field_wins';
   $handler->display->display_options['fields']['field_wins']['table'] = 'field_data_field_wins';
@@ -306,7 +308,7 @@ function acquiaplay_views_views_default_views() {
   $handler->display->display_options['fields']['field_game_type']['table'] = 'field_data_field_game_type';
   $handler->display->display_options['fields']['field_game_type']['field'] = 'field_game_type';
   $handler->display->display_options['fields']['field_game_type']['type'] = 'taxonomy_term_reference_plain';
-  /* Field: Content: Team One Score */
+  /* Field: Content: Team One Wins */
   $handler->display->display_options['fields']['field_player1_score']['id'] = 'field_player1_score';
   $handler->display->display_options['fields']['field_player1_score']['table'] = 'field_data_field_player1_score';
   $handler->display->display_options['fields']['field_player1_score']['field'] = 'field_player1_score';
@@ -314,7 +316,7 @@ function acquiaplay_views_views_default_views() {
     'thousand_separator' => ' ',
     'prefix_suffix' => 1,
   );
-  /* Field: Content: Team Two Score */
+  /* Field: Content: Team Two Wins */
   $handler->display->display_options['fields']['field_player2_score']['id'] = 'field_player2_score';
   $handler->display->display_options['fields']['field_player2_score']['table'] = 'field_data_field_player2_score';
   $handler->display->display_options['fields']['field_player2_score']['field'] = 'field_player2_score';
