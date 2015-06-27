@@ -3,6 +3,16 @@ description = A Bootstrap Sub-theme.
 core = 7.x
 base theme = bootstrap
 
+;;;;;;;;;;;;;;;;;;;;;
+;; Acquia Play Settings
+;;;;;;;;;;;;;;;;;;;;;
+
+settings[info1_title] = "Sign In"
+settings[info1_content] = "Sign in with your Acquia Google account. You will need an acquia.com email address to use this site."
+settings[info2_title] = "Play"
+settings[info2_content] = "Find someone on the ping pong or foosball leaderboards and challenge them to a game."
+settings[info3_title] = "Post"
+settings[info3_content] = "When your game is complete the winner should click the 'Post match results' button on the leaderboard pages."
 
 ;;;;;;;;;;;;;;;;;;;;;
 ;; Regions

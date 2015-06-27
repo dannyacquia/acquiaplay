@@ -5,18 +5,6 @@
  * template.php
  */
 
-/*
- * Implements themename_preprocess
- *
- * Using this function for all theme global variables
- */
-function bootstrap_sportsratingsacquia_preprocess(&$variables) {
-    $variables['welcome_how_to'] = array (
-        'Sign In' => 'Sign in with your Acquia Google account. You will need an acquia.com email address to use this site.',
-        'Play' => 'Find someone on the ping pong or foosball leaderboards and challenge them to a game.',
-        'Post' => 'When your game is complete the winner should click the "Post match results" button on the leaderboard pages.',
-    );
-}
 
 function bootstrap_sportsratingsacquia_theme() {
     $items = array();
