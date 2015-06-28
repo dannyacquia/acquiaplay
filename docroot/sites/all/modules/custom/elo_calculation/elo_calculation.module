@@ -1,22 +1,89 @@
 <?php
 
 /**
+ * ** From Ted
+ * These from my memory of the Drupal coding standards
+ * https://www.drupal.org/coding-standards
+ *
+ * "Functions and variables should be named using lowercase, and words should be separated with an underscore.
+ * Functions should in addition have the grouping/module name as a prefix, to avoid name collisions between modules.
+ *
+ * If you want you can use the Coder module to check this stuff(and others) for you.
+ * https://www.drupal.org/project/coder
+ *
+ *
+ * *** Functions Names
+ * ALL function names should start with your module name or _
+ *
+ * so _get_player_data should be _elo_calculation_get_player_data
+ *
+ * This ensures that no 2 modules will ever declare the same function.
+ * If you wanted shorted function names you could rename your module elo_calc
+ *
+ * *** Variable Names
+ * variables should be named using lowercase, and words should be separated with an underscore.
+ *
+ * This should be pretty easy search and replace $p1score -> $p1_score
+ *
+ *
+ *
+ *
+ */
+
+/**
  * Implement hook_node_presave
  */
 
 function elo_calculation_node_presave($node) {
     if ($node->type == 'match') {
+      /**
+       * ** From Ted
+       * I suggest moving all code inside this if statment to
+       * _elo_calculation_match_presave().
+       *
+       * So this function would just be a few lines.
+       * But then if you have to do presaves on other node types in the future this function
+       * doesn't contain other logic.
+       */
         // Set variables for match data
 
         $p1 = $node->field_player1[LANGUAGE_NONE][0]['target_id'];
         $p3 = $node->field_player3[LANGUAGE_NONE][0]['target_id'];
         $p1score = $node->field_player1_score[LANGUAGE_NONE][0]['value'];
         $p3score = $node->field_player2_score[LANGUAGE_NONE][0]['value'];
+      /**
+       * From Ted:
+       *
+       * I would prefer a longer name here like $game_term, just easier to read.
+       *
+       * Also since you always accesses as "$gt[0]['tid']" then I would just change the line to
+       *  $game_term = $node->field_game_type[LANGUAGE_NONE][0]['tid'];
+       */
         $gt = $node->field_game_type[LANGUAGE_NONE];
 
         // Check if match submitted was singles
+      /**
+       * Instead of checking against integer use a constant.
+       *
+       * 1. at the top of the code define the constants
+       *    define('ELO_CALCULATION_PP_SINGLES', 1);
+       *    define('ELO_CALCULATION_FB_SINGLES', 2);
+       * 2. Then test
+       *    if ($game_term == ELO_CALCULATION_PP_SINGLES || $game_term == ELO_CALCULATION_FB_SINGLES)
+       *    You can these is more readable for another programmers.
+       *
+       * I would probably go a step further and make a test function
+       *
+       * if (_elo_calculation_is_singles($game_term)) {
+       *
+       * You are doing the singles or doubles check multiple places in different functions
+       *  You could replaces all of these if statements.
+       */
         if ($gt[0]['tid'] == 1 || $gt[0]['tid'] == 2) {
             // Pull data for users, total opponent rating, wins, and losses
+          /**
+           * See notes below about _elo_calc_get_player_data
+           */
             $p1data = _get_player_data($gt[0]['tid'], $p1);
             $p3data = _get_player_data($gt[0]['tid'], $p3);
             $p1opprating = $p1data['opprating'] + $p3data['rating'];
@@ -38,6 +105,27 @@ function elo_calculation_node_presave($node) {
             $p2 = $node->field_player2[LANGUAGE_NONE][0]['target_id'];
             $p4 = $node->field_player4[LANGUAGE_NONE][0]['target_id'];
             // Pull data for users, total opponent rating, wins, and losses
+          /**
+           * From Ted:
+           *
+           * Not sure what is best here. This is what I am thinking but usually I might try these
+           * ideas then look at the code to see if think it is good. But I whether have you try it
+           * and see what you think
+           *
+           * I think you could use _elo_calc_get_player_data to get more information
+           * what if you changed the function signature to this
+           * _elo_calc_get_player_data($game_term, $player, $opponents, $team_mate = NULL)
+           *  $opponents : array of opponents, 1 or 2 depending
+           *  $team_mate : might be null if singles
+           *
+           * this function could return ALL info about a player
+           *  rating, opp_rating, wins, losses, total_games
+           * You would then call the functions _calc_wins_losses and _calc_elo_rating
+           *  from inside _get_player_data
+           *
+           * What I am suggesting would actually be less efficient cpu wise then your current code
+           *  but very little difference and  I think readability is much more important here
+           */
             $p1data = _get_player_data($gt[0]['tid'], $p1);
             $p2data = _get_player_data($gt[0]['tid'], $p2);
             $p3data = _get_player_data($gt[0]['tid'], $p3);
@@ -58,6 +146,14 @@ function elo_calculation_node_presave($node) {
             $p3elo = _calc_elo_rating($p3opprating, $p3data['wins'], $p3data['losses']);
             $p4elo = _calc_elo_rating($p4opprating, $p4data['wins'], $p4data['losses']);
             // Update user data with new values
+          /**
+           * From Ted:
+           *
+           * if you make changes above you could simply do
+           *  _elo_calc_update_player_data($game_term, $p1, $p1_data).
+           *
+           * Then you wouldn't need any line between: _elo_calc_get_player_data
+           */
             _update_player_data($gt[0]['tid'], $p1, $wins_losses['p1losses'], $wins_losses['p1wins'], $p1elo, $p1opprating, $p1data['totgames']);
             _update_player_data($gt[0]['tid'], $p2, $wins_losses['p2losses'], $wins_losses['p2wins'], $p2elo, $p2opprating, $p2data['totgames']);
             _update_player_data($gt[0]['tid'], $p3, $wins_losses['p3losses'], $wins_losses['p3wins'], $p3elo, $p3opprating, $p3data['totgames']);
@@ -68,6 +164,7 @@ function elo_calculation_node_presave($node) {
         }
     }
 }
+
 
 function _gt_error_message($gt) {
     if ($gt == 1 || $gt == 6) {
