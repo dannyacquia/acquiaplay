@@ -27,19 +27,17 @@ function _elo_calculation_match_presave($node) {
         // Pull data for users, total opponent rating, wins, and losses
         $p1_data = _elo_calculation_get_player_data($game_term, $p1);
         $p3_data = _elo_calculation_get_player_data($game_term, $p3);
-        $p1_opp_rating = $p1_data['opprating'] + $p3_data['rating'];
-        $p3_opp_rating = $p3_data['opprating'] + $p1_data['rating'];
 
         // Adjust wins and losses based on the scores of the match
         $wins_losses = _elo_calculation_calc_wins_losses($game_term, $p1_score, $p3_score, $p1_data['wins'], 0, $p3_data['wins'], 0, $p1_data['losses'], 0, $p3_data['losses'], 0);
 
         // Calculate the players ELO based on each others ELO and past matches
-        $p1_elo = _elo_calculation_calc_elo_rating($p1_opp_rating, $p1_data['wins'], $p1_data['losses']);
-        $p3_elo = _elo_calculation_calc_elo_rating($p3_opp_rating, $p3_data['wins'], $p3_data['losses']);
+        $p1_elo = _elo_calculation_calc_elo_rating($p1_data['rating'], $p3_data['rating'], $p1_data['totgames'], $wins_losses['t1_match_win']);
+        $p3_elo = _elo_calculation_calc_elo_rating($p3_data['rating'], $p1_data['rating'], $p3_data['totgames'], $wins_losses['t2_match_win']);
 
         // Update user data with new values
-        _elo_calculation_update_player_data($game_term, $p1, $wins_losses['p1losses'], $wins_losses['p1wins'], $p1_elo, $p1_opp_rating, $p1_data['totgames']);
-        _elo_calculation_update_player_data($game_term, $p3, $wins_losses['p3losses'], $wins_losses['p3wins'], $p3_elo, $p3_opp_rating, $p3_data['totgames']);
+        _elo_calculation_update_player_data($game_term, $p1, $wins_losses['p1losses'], $wins_losses['p1wins'], $p1_elo, $p1_data['totgames']);
+        _elo_calculation_update_player_data($game_term, $p3, $wins_losses['p3losses'], $wins_losses['p3wins'], $p3_elo, $p3_data['totgames']);
     }
     // Check if match submitted was doubles
     else {
@@ -73,19 +71,15 @@ function _elo_calculation_match_presave($node) {
         $p4_data = _elo_calculation_get_player_data($game_term, $p4);
         $team1_opp_rating = round(($p3_data['rating'] + $p4_data['rating']) / 2);
         $team2_opp_rating = round(($p1_data['rating'] + $p2_data['rating']) / 2);
-        $p1_opp_rating = $p1_data['opprating'] + $team2_opp_rating;
-        $p2_opp_rating = $p2_data['opprating'] + $team2_opp_rating;
-        $p3_opp_rating = $p3_data['opprating'] + $team1_opp_rating;
-        $p4_opp_rating = $p4_data['opprating'] + $team1_opp_rating;
 
         // Adjust wins and losses based on the scores of the match
         $wins_losses = _elo_calculation_calc_wins_losses($game_term, $p1_score, $p3_score, $p1_data['wins'], $p2_data['wins'], $p3_data['wins'], $p4_data['wins'], $p1_data['losses'], $p2_data['losses'], $p3_data['losses'], $p4_data['losses']);
 
         // Calculate the players ELO based on each others ELO and past matches
-        $p1_elo = _elo_calculation_calc_elo_rating($p1_opp_rating, $p1_data['wins'], $p1_data['losses']);
-        $p2_elo = _elo_calculation_calc_elo_rating($p2_opp_rating, $p2_data['wins'], $p2_data['losses']);
-        $p3_elo = _elo_calculation_calc_elo_rating($p3_opp_rating, $p3_data['wins'], $p3_data['losses']);
-        $p4_elo = _elo_calculation_calc_elo_rating($p4_opp_rating, $p4_data['wins'], $p4_data['losses']);
+        $p1_elo = _elo_calculation_calc_elo_rating($p1_data['rating'], $team1_opp_rating, $p1_data['totgames'], $wins_losses['t1_match_win']);
+        $p2_elo = _elo_calculation_calc_elo_rating($p2_data['rating'], $team1_opp_rating, $p2_data['totgames'], $wins_losses['t1_match_win']);
+        $p3_elo = _elo_calculation_calc_elo_rating($p3_data['rating'], $team2_opp_rating, $p3_data['totgames'], $wins_losses['t2_match_win']);
+        $p4_elo = _elo_calculation_calc_elo_rating($p4_data['rating'], $team2_opp_rating, $p4_data['totgames'], $wins_losses['t2_match_win']);
         // Update user data with new values
         /**
          * From Ted:
@@ -95,10 +89,10 @@ function _elo_calculation_match_presave($node) {
          *
          * Then you wouldn't need any line between: _elo_calc_elo_calculation_get_player_data
          */
-        _elo_calculation_update_player_data($game_term, $p1, $wins_losses['p1losses'], $wins_losses['p1wins'], $p1_elo, $p1_opp_rating, $p1_data['totgames']);
-        _elo_calculation_update_player_data($game_term, $p2, $wins_losses['p2losses'], $wins_losses['p2wins'], $p2_elo, $p2_opp_rating, $p2_data['totgames']);
-        _elo_calculation_update_player_data($game_term, $p3, $wins_losses['p3losses'], $wins_losses['p3wins'], $p3_elo, $p3_opp_rating, $p3_data['totgames']);
-        _elo_calculation_update_player_data($game_term, $p4, $wins_losses['p4losses'], $wins_losses['p4wins'], $p4_elo, $p4_opp_rating, $p4_data['totgames']);
+        _elo_calculation_update_player_data($game_term, $p1, $wins_losses['p1losses'], $wins_losses['p1wins'], $p1_elo, $p1_data['totgames']);
+        _elo_calculation_update_player_data($game_term, $p2, $wins_losses['p2losses'], $wins_losses['p2wins'], $p2_elo, $p2_data['totgames']);
+        _elo_calculation_update_player_data($game_term, $p3, $wins_losses['p3losses'], $wins_losses['p3wins'], $p3_elo, $p3_data['totgames']);
+        _elo_calculation_update_player_data($game_term, $p4, $wins_losses['p4losses'], $wins_losses['p4wins'], $p4_elo, $p4_data['totgames']);
     }
 }
 
@@ -148,6 +142,8 @@ function _elo_calculation_calc_wins_losses($game_term, $p1_score, $p3_score, $p1
     if ($p1_score > $p3_score) {
         $p1_wins = $p1_wins + 1;
         $p3_losses = $p3_losses +1;
+        $t1_match_win = TRUE;
+        $t2_match_win = FALSE;
         if (!_elo_calculation_is_singles($game_term)) {
             $p2_wins = $p2_wins +1;
             $p4_losses = $p4_losses +1;
@@ -156,6 +152,8 @@ function _elo_calculation_calc_wins_losses($game_term, $p1_score, $p3_score, $p1
     elseif ($p3_score > $p1_score) {
         $p3_wins = $p3_wins +1;
         $p1_losses = $p1_losses +1;
+        $t1_match_win = FALSE;
+        $t2_match_win = TRUE;
         if (!_elo_calculation_is_singles($game_term)) {
             $p2_losses = $p2_losses +1;
             $p4_wins = $p4_wins +1;
@@ -164,33 +162,59 @@ function _elo_calculation_calc_wins_losses($game_term, $p1_score, $p3_score, $p1
     else {
         _elo_calculation_game_term_error_message($game_term);
     }
-    return array('p1wins' => $p1_wins, 'p1losses' => $p1_losses, 'p2wins' => $p2_wins, 'p2losses' => $p2_losses, 'p3wins' => $p3_wins, 'p3losses' => $p3_losses, 'p4wins' => $p4_wins, 'p4losses' => $p4_losses);
+    return array('t1_match_win' => $t1_match_win, 't2_match_win' => $t2_match_win, 'p1wins' => $p1_wins, 'p1losses' => $p1_losses, 'p2wins' => $p2_wins, 'p2losses' => $p2_losses, 'p3wins' => $p3_wins, 'p3losses' => $p3_losses, 'p4wins' => $p4_wins, 'p4losses' => $p4_losses);
 }
 
-function _elo_calculation_calc_elo_rating($opp_rating, $wins, $losses) {
-    $elo_calc = $opp_rating + 400 * ($wins - $losses);
-    return round($elo_calc / ($wins + $losses));
+function _elo_calculation_calc_elo_rating($player_rating, $opp_rating, $total_games, $match_won) {
+    $rating_diff = abs($player_rating - $opp_rating);
+    $k_value = _elo_calculation_calc_k_value($player_rating, $rating_diff, $match_won, $total_games);
+    $elo_calc = $player_rating + $k_value;
+    return round($elo_calc);
+}
+
+function _elo_calculation_calc_k_value($player_rating, $rating_diff, $match_won, $total_games) {
+    if ($total_games < 30 && $player_rating < 2300) {
+        $k_value = 80;
+    }
+    elseif ($player_rating < 2400) {
+        $k_value = 40;
+    }
+    else {
+        $k_value = 20;
+    }
+
+    $k_value_win = $k_value * ($rating_diff / $player_rating);
+
+    if ($k_value_win < 5) {
+        $k_value_win = 5;
+    }
+
+    if (!$match_won) {
+        $k_value_loss = ($k_value - $k_value_win) * -1;
+        return $k_value_loss;
+    }
+
+    return $k_value_win;
 }
 
 function _elo_calculation_get_player_data($game_term, $player) {
     $player_data = entity_metadata_wrapper('user', $player);
     if (!_elo_calculation_is_foosball($game_term)) {
-        $data = array('rating' => $player_data->field_ping_pong_rating->value(), 'opprating' => $player_data->field_total_pp_opponents_rating->value(), 'wins' => $player_data->field_wins->value(), 'losses' => $player_data->field_losses->value(), 'totgames' => $player_data->field_total_games_played->value());
+        $data = array('rating' => $player_data->field_ping_pong_rating->value(), 'wins' => $player_data->field_wins->value(), 'losses' => $player_data->field_losses->value(), 'totgames' => $player_data->field_total_games_played->value());
     }
     elseif (_elo_calculation_is_foosball($game_term)) {
-        $data = array('rating' => $player_data->field_foosball_rating->value(), 'opprating' => $player_data->field_total_fb_opponents_rating->value(), 'wins' => $player_data->field_foosball_wins->value(), 'losses' => $player_data->field_foosball_losses->value(), 'totgames' => $player_data->field_total_fb_games_played->value());
+        $data = array('rating' => $player_data->field_foosball_rating->value(), 'wins' => $player_data->field_foosball_wins->value(), 'losses' => $player_data->field_foosball_losses->value(), 'totgames' => $player_data->field_total_fb_games_played->value());
     }
     $data['totgames'] = $data['totgames'] + 1;
     return $data;
 }
 
-function _elo_calculation_update_player_data($game_term, $player, $player_losses, $player_wins, $player_rating, $player_opp_rating, $player_tot_games) {
+function _elo_calculation_update_player_data($game_term, $player, $player_losses, $player_wins, $player_rating, $player_tot_games) {
     $player_data = entity_metadata_wrapper('user', $player);
     if (!_elo_calculation_is_foosball($game_term)) {
         $player_data->field_losses->set($player_losses);
         $player_data->field_wins->set($player_wins);
         $player_data->field_ping_pong_rating->set($player_rating);
-        $player_data->field_total_pp_opponents_rating->set($player_opp_rating);
         $player_data->field_total_games_played->set($player_tot_games);
         $player_data->save();
     }
@@ -198,7 +222,6 @@ function _elo_calculation_update_player_data($game_term, $player, $player_losses
         $player_data->field_foosball_losses->set($player_losses);
         $player_data->field_foosball_wins->set($player_wins);
         $player_data->field_foosball_rating->set($player_rating);
-        $player_data->field_total_fb_opponents_rating->set($player_opp_rating);
         $player_data->field_total_fb_games_played->set($player_tot_games);
         $player_data->save();
     }
