@@ -7,9 +7,10 @@ base theme = bootstrap
 ;; Acquia Play Settings
 ;;;;;;;;;;;;;;;;;;;;;
 
+settings[toggle_logo] = 0
+settings[toggle_name] = 0
 settings[bootstrap_navbar_position] = 'static-top'
 settings[bootstrap_navbar_inverse] = 1
-
 settings[info1_title] = "Sign In"
 settings[info1_content] = "Sign in with your Acquia Google account. You will need an acquia.com email address to use this site."
 settings[info2_title] = "Play"
