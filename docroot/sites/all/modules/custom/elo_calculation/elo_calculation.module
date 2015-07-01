@@ -5,319 +5,224 @@
  */
 
 function elo_calculation_node_presave($node) {
-  if ($node->type == 'match') {
+    if ($node->type == 'match') {
+        _elo_calculation_match_presave($node);
+    }
+}
+
+function _elo_calculation_match_presave($node) {
     // Set variables for match data
+    $p1 = $node->field_player1[LANGUAGE_NONE][0]['target_id'];
+    $p3 = $node->field_player3[LANGUAGE_NONE][0]['target_id'];
+    $p1_score = $node->field_player1_score[LANGUAGE_NONE][0]['value'];
+    $p3_score = $node->field_player2_score[LANGUAGE_NONE][0]['value'];
+    $game_term = $node->field_game_type[LANGUAGE_NONE][0]['tid'];
+    define('ELO_CALCULATION_PP_SINGLES', 1);
+    define('ELO_CALCULATION_FB_SINGLES', 2);
+    define('ELO_CALCULATION_PP_DOUBLES', 6);
+    define('ELO_CALCULATION_FB_DOUBLES', 11);
 
-      global $user;
-      //$node->field_player1[LANGUAGE_NONE][0]['target_id'] = $user->uid;
-      $p1 = $node->field_player1[LANGUAGE_NONE][0]['target_id'];
-      $p3 = $node->field_player3[LANGUAGE_NONE][0]['target_id'];
-      $p1score = $node->field_player1_score[LANGUAGE_NONE][0]['value'];
-      $p3score = $node->field_player2_score[LANGUAGE_NONE][0]['value'];
-      $gt = $node->field_game_type[LANGUAGE_NONE];
-
-      // Check if match submitted was ping pong
-      if ($gt[0]['tid'] == 1) {
-        // Pull data for users ping pong rating, total opponent rating, wins, and losses
-
-          $p1data = entity_metadata_wrapper('user', $p1);
-          $p3data = entity_metadata_wrapper('user', $p3);
-          $p1rating = $p1data->field_ping_pong_rating->value();
-          $p1opprating = $p1data->field_total_pp_opponents_rating->value();
-          $p1wins = $p1data->field_wins->value();
-          $p1losses = $p1data->field_losses->value();
-          $p3rating = $p3data->field_ping_pong_rating->value();
-          $p3opprating = $p3data->field_total_pp_opponents_rating->value();
-          $p3wins = $p3data->field_wins->value();
-          $p3losses = $p3data->field_losses->value();
-          $p1opprating = $p1opprating + $p3rating;
-          $p3opprating = $p3opprating + $p1rating;
-          $p1totgames = $p1data->field_total_games_played->value();
-          $p3totgames = $p3data->field_total_games_played->value();
-          $p1totgames = $p1totgames + 1;
-          $p3totgames = $p3totgames + 1;
+    // Check if match submitted was singles
+    if (_elo_calculation_is_singles($game_term)) {
+        // Pull data for users, total opponent rating, wins, and losses
+        $p1_data = _elo_calculation_get_player_data($game_term, $p1);
+        $p3_data = _elo_calculation_get_player_data($game_term, $p3);
 
         // Adjust wins and losses based on the scores of the match
-          if ($p1score > $p3score) {
-              $p1wins = $p1wins + 1;
-              $p3losses = $p3losses +1;
-          }
-          elseif ($p3score > $p1score) {
-              $p3wins = $p3wins +1;
-              $p1losses = $p1losses +1;
-          }
-          else {
-              watchdog('elo_calculation', 'Player entered ping pong match that resulted in a tie');
-              drupal_set_message('Error saving match: There is no crying in baseball...er...tying in ping pong', 'warning');
-              drupal_goto('node/add/match');
-          }
+        $wins_losses = _elo_calculation_calc_wins_losses($game_term, $p1_score, $p3_score, $p1_data['wins'], 0, $p3_data['wins'], 0, $p1_data['losses'], 0, $p3_data['losses'], 0);
+
         // Calculate the players ELO based on each others ELO and past matches
-          $p1elocalc = $p1opprating + 400 * ($p1wins - $p1losses);
-          $p1elocalc2 = round($p1elocalc / ($p1wins + $p1losses));
-          $p3elocalc = $p3opprating + 400 * ($p3wins - $p3losses);
-          $p3elocalc2 = round($p3elocalc / ($p3wins + $p3losses));
+        $p1_elo = _elo_calculation_calc_elo_rating($p1_data['rating'], $p3_data['rating'], $p1_data['totgames'], $wins_losses['t1_match_win']);
+        $p3_elo = _elo_calculation_calc_elo_rating($p3_data['rating'], $p1_data['rating'], $p3_data['totgames'], $wins_losses['t2_match_win']);
 
         // Update user data with new values
-          $p1data->field_losses->set($p1losses);
-          $p1data->field_wins->set($p1wins);
-          $p1data->field_ping_pong_rating->set($p1elocalc2);
-          $p1data->field_total_pp_opponents_rating->set($p1opprating);
-          $p1data->field_total_games_played->set($p1totgames);
-          $p1data->save();
-          $p3data->field_wins->set($p3wins);
-          $p3data->field_losses->set($p3losses);
-          $p3data->field_ping_pong_rating->set($p3elocalc2);
-          $p3data->field_total_pp_opponents_rating->set($p3opprating);
-          $p3data->field_total_games_played->set($p3totgames);
-          $p3data->save();
-      }
-      // Check if match submitted was foosball
-      elseif ($gt[0]['tid'] == 2) {
-          // Pull data for users foosball rating, total opponent rating, wins, and losses
-          $p1data = entity_metadata_wrapper('user', $p1);
-          $p3data = entity_metadata_wrapper('user', $p3);
-          $p1rating = $p1data->field_foosball_rating->value();
-          $p1opprating = $p1data->field_total_fb_opponents_rating->value();
-          $p1wins = $p1data->field_foosball_wins->value();
-          $p1losses = $p1data->field_foosball_losses->value();
-          $p3rating = $p3data->field_foosball_rating->value();
-          $p3opprating = $p3data->field_total_fb_opponents_rating->value();
-          $p3wins = $p3data->field_foosball_wins->value();
-          $p3losses = $p3data->field_foosball_losses->value();
-          $p1opprating = $p1opprating + $p3rating;
-          $p3opprating = $p3opprating + $p1rating;
-          $p1totfbgames = $p1data->field_total_fb_games_played->value();
-          $p3totfbgames = $p3data->field_total_fb_games_played->value();
-          $p1totfbgames = $p1totfbgames + 1;
-          $p3totfbgames = $p3totfbgames + 1;
+        _elo_calculation_update_player_data($game_term, $p1, $wins_losses['p1losses'], $wins_losses['p1wins'], $p1_elo, $p1_data['totgames']);
+        _elo_calculation_update_player_data($game_term, $p3, $wins_losses['p3losses'], $wins_losses['p3wins'], $p3_elo, $p3_data['totgames']);
+    }
+    // Check if match submitted was doubles
+    else {
+        $p2 = $node->field_player2[LANGUAGE_NONE][0]['target_id'];
+        $p4 = $node->field_player4[LANGUAGE_NONE][0]['target_id'];
+        // Pull data for users, total opponent rating, wins, and losses
+        /**
+         * From Ted:
+         *
+         * Not sure what is best here. This is what I am thinking but usually I might try these
+         * ideas then look at the code to see if think it is good. But I whether have you try it
+         * and see what you think
+         *
+         * I think you could use _elo_calc_elo_calculation_get_player_data to get more information
+         * what if you changed the function signature to this
+         * _elo_calc_elo_calculation_get_player_data($game_term, $player, $opponents, $team_mate = NULL)
+         *  $opponents : array of opponents, 1 or 2 depending
+         *  $team_mate : might be null if singles
+         *
+         * this function could return ALL info about a player
+         *  rating, opp_rating, wins, losses, total_games
+         * You would then call the functions _elo_calculation_calc_wins_losses and _elo_calculation_calc_elo_rating
+         *  from inside _elo_calculation_get_player_data
+         *
+         * What I am suggesting would actually be less efficient cpu wise then your current code
+         *  but very little difference and  I think readability is much more important here
+         */
+        $p1_data = _elo_calculation_get_player_data($game_term, $p1);
+        $p2_data = _elo_calculation_get_player_data($game_term, $p2);
+        $p3_data = _elo_calculation_get_player_data($game_term, $p3);
+        $p4_data = _elo_calculation_get_player_data($game_term, $p4);
+        $team1_opp_rating = round(($p3_data['rating'] + $p4_data['rating']) / 2);
+        $team2_opp_rating = round(($p1_data['rating'] + $p2_data['rating']) / 2);
 
-          // Adjust wins and losses based on the scores of the match
-          if ($p1score > $p3score) {
-              $p1wins = $p1wins + 1;
-              $p3losses = $p3losses +1;
-          }
-          elseif ($p3score > $p1score) {
-              $p3wins = $p3wins +1;
-              $p1losses = $p1losses +1;
-          }
-          else {
-              watchdog('elo_calculation', 'Player entered foosball match that resulted in a tie');
-              drupal_set_message('Error saving match: There is no crying in baseball...er...tying in foosball', 'warning');
-              drupal_goto('node/add/match');
-          }
-          // Calculate the players ELO based on each others ELO and past matches
-          $p1elocalc = $p1opprating + 400 * ($p1wins - $p1losses);
-          $p1elocalc2 = round($p1elocalc / ($p1wins + $p1losses));
-          $p3elocalc = $p3opprating + 400 * ($p3wins - $p3losses);
-          $p3elocalc2 = round($p3elocalc / ($p3wins + $p3losses));
-          // Update user data with new values
+        // Adjust wins and losses based on the scores of the match
+        $wins_losses = _elo_calculation_calc_wins_losses($game_term, $p1_score, $p3_score, $p1_data['wins'], $p2_data['wins'], $p3_data['wins'], $p4_data['wins'], $p1_data['losses'], $p2_data['losses'], $p3_data['losses'], $p4_data['losses']);
 
-          $p1data->field_foosball_losses->set($p1losses);
-          $p1data->field_foosball_wins->set($p1wins);
-          $p1data->field_foosball_rating->set($p1elocalc2);
-          $p1data->field_total_fb_opponents_rating->set($p1opprating);
-          $p1data->field_total_fb_games_played->set($p1totfbgames);
-          $p1data->save();
-          $p3data->field_foosball_wins->set($p3wins);
-          $p3data->field_foosball_losses->set($p3losses);
-          $p3data->field_foosball_rating->set($p3elocalc2);
-          $p3data->field_total_fb_opponents_rating->set($p3opprating);
-          $p3data->field_total_fb_games_played->set($p3totfbgames);
-          $p3data->save();
-      }
-      // Check if match submitted was ping pong doubles
-      elseif ($gt[0]['tid'] == 6) {
-          $p2 = $node->field_player2[LANGUAGE_NONE][0]['target_id'];
-          $p4 = $node->field_player4[LANGUAGE_NONE][0]['target_id'];
-          // Pull data for users foosball rating, total opponent rating, wins, and losses
-          $p1data = entity_metadata_wrapper('user', $p1);
-          $p2data = entity_metadata_wrapper('user', $p2);
-          $p3data = entity_metadata_wrapper('user', $p3);
-          $p4data = entity_metadata_wrapper('user', $p4);
-          $p1rating = $p1data->field_ping_pong_rating->value();
-          $p1opprating = $p1data->field_total_pp_opponents_rating->value();
-          $p1wins = $p1data->field_wins->value();
-          $p1losses = $p1data->field_losses->value();
-          $p2rating = $p2data->field_ping_pong_rating->value();
-          $p2opprating = $p2data->field_total_pp_opponents_rating->value();
-          $p2wins = $p2data->field_wins->value();
-          $p2losses = $p2data->field_losses->value();
-          $p3rating = $p3data->field_ping_pong_rating->value();
-          $p3opprating = $p3data->field_total_pp_opponents_rating->value();
-          $p3wins = $p3data->field_wins->value();
-          $p3losses = $p3data->field_losses->value();
-          $p4rating = $p4data->field_ping_pong_rating->value();
-          $p4opprating = $p4data->field_total_pp_opponents_rating->value();
-          $p4wins = $p4data->field_wins->value();
-          $p4losses = $p4data->field_losses->value();
-          $team1opprating = round(($p3rating + $p4rating) / 2);
-          $team2opprating = round(($p1rating + $p2rating) / 2);
-          $p1opprating = $p1opprating + $team2opprating;
-          $p2opprating = $p2opprating + $team2opprating;
-          $p3opprating = $p3opprating + $team1opprating;
-          $p4opprating = $p4opprating + $team1opprating;
-          $p1totgames = $p1data->field_total_games_played->value();
-          $p2totgames = $p2data->field_total_games_played->value();
-          $p3totgames = $p3data->field_total_games_played->value();
-          $p4totgames = $p4data->field_total_games_played->value();
-          $p1totgames = $p1totgames +1;
-          $p2totgames = $p2totgames +1;
-          $p3totgames = $p3totgames +1;
-          $p4totgames = $p4totgames +1;
+        // Calculate the players ELO based on each others ELO and past matches
+        $p1_elo = _elo_calculation_calc_elo_rating($p1_data['rating'], $team1_opp_rating, $p1_data['totgames'], $wins_losses['t1_match_win']);
+        $p2_elo = _elo_calculation_calc_elo_rating($p2_data['rating'], $team1_opp_rating, $p2_data['totgames'], $wins_losses['t1_match_win']);
+        $p3_elo = _elo_calculation_calc_elo_rating($p3_data['rating'], $team2_opp_rating, $p3_data['totgames'], $wins_losses['t2_match_win']);
+        $p4_elo = _elo_calculation_calc_elo_rating($p4_data['rating'], $team2_opp_rating, $p4_data['totgames'], $wins_losses['t2_match_win']);
+        // Update user data with new values
+        /**
+         * From Ted:
+         *
+         * if you make changes above you could simply do
+         *  _elo_calc_elo_calculation_update_player_data($game_term, $p1, $p1_data).
+         *
+         * Then you wouldn't need any line between: _elo_calc_elo_calculation_get_player_data
+         */
+        _elo_calculation_update_player_data($game_term, $p1, $wins_losses['p1losses'], $wins_losses['p1wins'], $p1_elo, $p1_data['totgames']);
+        _elo_calculation_update_player_data($game_term, $p2, $wins_losses['p2losses'], $wins_losses['p2wins'], $p2_elo, $p2_data['totgames']);
+        _elo_calculation_update_player_data($game_term, $p3, $wins_losses['p3losses'], $wins_losses['p3wins'], $p3_elo, $p3_data['totgames']);
+        _elo_calculation_update_player_data($game_term, $p4, $wins_losses['p4losses'], $wins_losses['p4wins'], $p4_elo, $p4_data['totgames']);
+    }
+}
 
+function _elo_calculation_is_singles($game_term) {
+    if ($game_term == ELO_CALCULATION_PP_SINGLES || $game_term == ELO_CALCULATION_FB_SINGLES) {
+        return TRUE;
+    }
+    elseif ($game_term == ELO_CALCULATION_PP_DOUBLES || $game_term == ELO_CALCULATION_FB_DOUBLES) {
+        return FALSE;
+    }
+    else {
+        _elo_calculation_game_term_error_message($game_term);
+    }
+}
 
-          // Adjust wins and losses based on the scores of the match
-          if ($p1score > $p3score) {
-              $p1wins = $p1wins + 1;
-              $p2wins = $p2wins + 1;
-              $p3losses = $p3losses +1;
-              $p4losses = $p4losses +1;
-          }
-          elseif ($p3score > $p1score) {
-              $p3wins = $p3wins +1;
-              $p4wins = $p4wins +1;
-              $p1losses = $p1losses +1;
-              $p2losses = $p2losses +1;
-          }
-          else {
-              watchdog('elo_calculation', 'Player entered ping pong match that resulted in a tie');
-              drupal_set_message('Error saving match: There is no crying in baseball...er...tying in ping pong', 'warning');
-              drupal_goto('node/add/match');
-          }
-          // Calculate the players ELO based on each others ELO and past matches
-          $p1elocalc = $p1opprating + 400 * ($p1wins - $p1losses);
-          $p1elocalc2 = round($p1elocalc / ($p1wins + $p1losses));
-          $p2elocalc = $p2opprating + 400 * ($p2wins - $p2losses);
-          $p2elocalc2 = round($p2elocalc / ($p2wins + $p2losses));
-          $p3elocalc = $p3opprating + 400 * ($p3wins - $p3losses);
-          $p3elocalc2 = round($p3elocalc / ($p3wins + $p3losses));
-          $p4elocalc = $p4opprating + 400 * ($p4wins - $p4losses);
-          $p4elocalc2 = round($p4elocalc / ($p4wins + $p4losses));
-          // Update user data with new values
+function _elo_calculation_is_foosball($game_term) {
+    if ($game_term == ELO_CALCULATION_FB_SINGLES || $game_term == ELO_CALCULATION_FB_DOUBLES) {
+        return TRUE;
+    }
+    elseif ($game_term == ELO_CALCULATION_PP_SINGLES || $game_term == ELO_CALCULATION_PP_DOUBLES) {
+        return FALSE;
+    }
+    else {
+        _elo_calculation_game_term_error_message($game_term);
+    }
+}
 
-          $p1data->field_losses->set($p1losses);
-          $p1data->field_wins->set($p1wins);
-          $p1data->field_ping_pong_rating->set($p1elocalc2);
-          $p1data->field_total_pp_opponents_rating->set($p1opprating);
-          $p1data->field_total_games_played->set($p1totgames);
-          $p1data->save();
-          $p2data->field_losses->set($p2losses);
-          $p2data->field_wins->set($p2wins);
-          $p2data->field_ping_pong_rating->set($p2elocalc2);
-          $p2data->field_total_games_played->set($p2totgames);
-          $p2data->field_total_pp_opponents_rating->set($p2opprating);
-          $p2data->save();
-          $p3data->field_wins->set($p3wins);
-          $p3data->field_losses->set($p3losses);
-          $p3data->field_ping_pong_rating->set($p3elocalc2);
-          $p3data->field_total_pp_opponents_rating->set($p3opprating);
-          $p3data->field_total_games_played->set($p3totgames);
-          $p3data->save();
-          $p4data->field_losses->set($p4losses);
-          $p4data->field_wins->set($p4wins);
-          $p4data->field_ping_pong_rating->set($p4elocalc2);
-          $p4data->field_total_pp_opponents_rating->set($p4opprating);
-          $p4data->field_total_games_played->set($p4totgames);
-          $p4data->save();
-      }
-      // Check if match submitted was foosball doubles
-      elseif ($gt[0]['tid'] == 11) {
-          $p2 = $node->field_player2[LANGUAGE_NONE][0]['target_id'];
-          $p4 = $node->field_player4[LANGUAGE_NONE][0]['target_id'];
-          // Pull data for users foosball rating, total opponent rating, wins, and losses
-          $p1data = entity_metadata_wrapper('user', $p1);
-          $p2data = entity_metadata_wrapper('user', $p2);
-          $p3data = entity_metadata_wrapper('user', $p3);
-          $p4data = entity_metadata_wrapper('user', $p4);
-          $p1rating = $p1data->field_foosball_rating->value();
-          $p1opprating = $p1data->field_total_fb_opponents_rating->value();
-          $p1wins = $p1data->field_foosball_wins->value();
-          $p1losses = $p1data->field_foosball_losses->value();
-          $p2rating = $p2data->field_foosball_rating->value();
-          $p2opprating = $p2data->field_total_fb_opponents_rating->value();
-          $p2wins = $p2data->field_foosball_wins->value();
-          $p2losses = $p2data->field_foosball_losses->value();
-          $p3rating = $p3data->field_foosball_rating->value();
-          $p3opprating = $p3data->field_total_fb_opponents_rating->value();
-          $p3wins = $p3data->field_foosball_wins->value();
-          $p3losses = $p3data->field_foosball_losses->value();
-          $p4rating = $p4data->field_foosball_rating->value();
-          $p4opprating = $p4data->field_total_fb_opponents_rating->value();
-          $p4wins = $p4data->field_foosball_wins->value();
-          $p4losses = $p4data->field_foosball_losses->value();
-          $team1opprating = round(($p3rating + $p4rating) / 2);
-          $team2opprating = round(($p1rating + $p2rating) / 2);
-          $p1opprating = $p1opprating + $team2opprating;
-          $p2opprating = $p2opprating + $team2opprating;
-          $p3opprating = $p3opprating + $team1opprating;
-          $p4opprating = $p4opprating + $team1opprating;
-          $p1totfbgames = $p1data->field_total_fb_games_played->value();
-          $p3totfbgames = $p3data->field_total_fb_games_played->value();
-          $p1totfbgames = $p1totfbgames + 1;
-          $p3totfbgames = $p3totfbgames + 1;
-          $p2totfbgames = $p2data->field_total_fb_games_played->value();
-          $p4totfbgames = $p4data->field_total_fb_games_played->value();
-          $p2totfbgames = $p2totfbgames + 1;
-          $p4totfbgames = $p4totfbgames + 1;
+function _elo_calculation_game_term_error_message($game_term) {
+    if (_elo_calculation_is_foosball($game_term)) {
+        $game = "Foosball";
+    }
+    elseif (!_elo_calculation_is_foosball($game_term)) {
+        $game = "Ping Pong";
+    }
+    else {
+        watchdog('elo_calculation', 'Match type did not fall into ping pong or foosball');
+        drupal_set_message(t('Error saving match: Not sure how you got here, but if you could please email nick.delrossi or danny.willford we will look into it. Sorry for the inconvenience!', 'error'));
+        drupal_goto('node/add/match');
+    }
 
-          // Adjust wins and losses based on the scores of the match
-          if ($p1score > $p3score) {
-              $p1wins = $p1wins + 1;
-              $p2wins = $p2wins + 1;
-              $p3losses = $p3losses +1;
-              $p4losses = $p4losses +1;
-          }
-          elseif ($p3score > $p1score) {
-              $p3wins = $p3wins +1;
-              $p4wins = $p4wins +1;
-              $p1losses = $p1losses +1;
-              $p2losses = $p2losses +1;
-          }
-          else {
-              watchdog('elo_calculation', 'Player entered foosball match that resulted in a tie');
-              drupal_set_message('Error saving match: There is no crying in baseball...er...tying in foosball', 'warning');
-              drupal_goto('node/add/match');
-          }
-          // Calculate the players ELO based on each others ELO and past matches
-          $p1elocalc = $p1opprating + 400 * ($p1wins - $p1losses);
-          $p1elocalc2 = round($p1elocalc / ($p1wins + $p1losses));
-          $p2elocalc = $p2opprating + 400 * ($p2wins - $p2losses);
-          $p2elocalc2 = round($p2elocalc / ($p2wins + $p2losses));
-          $p3elocalc = $p3opprating + 400 * ($p3wins - $p3losses);
-          $p3elocalc2 = round($p3elocalc / ($p3wins + $p3losses));
-          $p4elocalc = $p4opprating + 400 * ($p4wins - $p4losses);
-          $p4elocalc2 = round($p4elocalc / ($p4wins + $p4losses));
-          // Update user data with new values
+    watchdog('elo_calculation', 'Player entered ' . $game . ' match that resulted in a tie');
+    drupal_set_message(t('Error saving match: There is no crying in baseball...er...tying in ' . $game . '', 'warning'));
+    drupal_goto('node/add/match');
+}
 
-          $p1data->field_foosball_losses->set($p1losses);
-          $p1data->field_foosball_wins->set($p1wins);
-          $p1data->field_foosball_rating->set($p1elocalc2);
-          $p1data->field_total_fb_opponents_rating->set($p1opprating);
-          $p1data->field_total_fb_games_played->set($p1totfbgames);
-          $p1data->save();
-          $p2data->field_foosball_losses->set($p2losses);
-          $p2data->field_foosball_wins->set($p2wins);
-          $p2data->field_foosball_rating->set($p2elocalc2);
-          $p2data->field_total_fb_opponents_rating->set($p2opprating);
-          $p2data->field_total_fb_games_played->set($p2totfbgames);
-          $p2data->save();
-          $p3data->field_foosball_wins->set($p3wins);
-          $p3data->field_foosball_losses->set($p3losses);
-          $p3data->field_foosball_rating->set($p3elocalc2);
-          $p3data->field_total_fb_opponents_rating->set($p3opprating);
-          $p3data->field_total_fb_games_played->set($p3totfbgames);
-          $p3data->save();
-          $p4data->field_foosball_losses->set($p4losses);
-          $p4data->field_foosball_wins->set($p4wins);
-          $p4data->field_foosball_rating->set($p4elocalc2);
-          $p4data->field_total_fb_opponents_rating->set($p4opprating);
-          $p4data->field_total_fb_games_played->set($p4totfbgames);
-          $p4data->save();
-      }
-      else {
-          watchdog('elo_calculation', 'Match type did not fall into ping pong or foosball');
-          drupal_set_message('Error saving match: Not sure how you got here, but if you could please email nick.delrossi or danny.willford we will look into it. Sorry for the inconvenience!', 'error');
-          drupal_goto('node/add/match');
-      }
-  }
+function _elo_calculation_calc_wins_losses($game_term, $p1_score, $p3_score, $p1_wins, $p2_wins, $p3_wins, $p4_wins, $p1_losses, $p2_losses, $p3_losses, $p4_losses) {
+    if ($p1_score > $p3_score) {
+        $p1_wins = $p1_wins + 1;
+        $p3_losses = $p3_losses +1;
+        $t1_match_win = TRUE;
+        $t2_match_win = FALSE;
+        if (!_elo_calculation_is_singles($game_term)) {
+            $p2_wins = $p2_wins +1;
+            $p4_losses = $p4_losses +1;
+        }
+    }
+    elseif ($p3_score > $p1_score) {
+        $p3_wins = $p3_wins +1;
+        $p1_losses = $p1_losses +1;
+        $t1_match_win = FALSE;
+        $t2_match_win = TRUE;
+        if (!_elo_calculation_is_singles($game_term)) {
+            $p2_losses = $p2_losses +1;
+            $p4_wins = $p4_wins +1;
+        }
+    }
+    else {
+        _elo_calculation_game_term_error_message($game_term);
+    }
+    return array('t1_match_win' => $t1_match_win, 't2_match_win' => $t2_match_win, 'p1wins' => $p1_wins, 'p1losses' => $p1_losses, 'p2wins' => $p2_wins, 'p2losses' => $p2_losses, 'p3wins' => $p3_wins, 'p3losses' => $p3_losses, 'p4wins' => $p4_wins, 'p4losses' => $p4_losses);
+}
+
+function _elo_calculation_calc_elo_rating($player_rating, $opp_rating, $total_games, $match_won) {
+    $rating_diff = abs($player_rating - $opp_rating);
+    $k_value = _elo_calculation_calc_k_value($player_rating, $rating_diff, $match_won, $total_games);
+    $elo_calc = $player_rating + $k_value;
+    return round($elo_calc);
+}
+
+function _elo_calculation_calc_k_value($player_rating, $rating_diff, $match_won, $total_games) {
+    if ($total_games < 30 && $player_rating < 2300) {
+        $k_value = 80;
+    }
+    elseif ($player_rating < 2400) {
+        $k_value = 40;
+    }
+    else {
+        $k_value = 20;
+    }
+
+    $k_value_win = $k_value * ($rating_diff / $player_rating);
+
+    if ($k_value_win < 5) {
+        $k_value_win = 5;
+    }
+
+    if (!$match_won) {
+        $k_value_loss = ($k_value - $k_value_win) * -1;
+        return $k_value_loss;
+    }
+
+    return $k_value_win;
+}
+
+function _elo_calculation_get_player_data($game_term, $player) {
+    $player_data = entity_metadata_wrapper('user', $player);
+    if (!_elo_calculation_is_foosball($game_term)) {
+        $data = array('rating' => $player_data->field_ping_pong_rating->value(), 'wins' => $player_data->field_wins->value(), 'losses' => $player_data->field_losses->value(), 'totgames' => $player_data->field_total_games_played->value());
+    }
+    elseif (_elo_calculation_is_foosball($game_term)) {
+        $data = array('rating' => $player_data->field_foosball_rating->value(), 'wins' => $player_data->field_foosball_wins->value(), 'losses' => $player_data->field_foosball_losses->value(), 'totgames' => $player_data->field_total_fb_games_played->value());
+    }
+    $data['totgames'] = $data['totgames'] + 1;
+    return $data;
+}
+
+function _elo_calculation_update_player_data($game_term, $player, $player_losses, $player_wins, $player_rating, $player_tot_games) {
+    $player_data = entity_metadata_wrapper('user', $player);
+    if (!_elo_calculation_is_foosball($game_term)) {
+        $player_data->field_losses->set($player_losses);
+        $player_data->field_wins->set($player_wins);
+        $player_data->field_ping_pong_rating->set($player_rating);
+        $player_data->field_total_games_played->set($player_tot_games);
+        $player_data->save();
+    }
+    elseif (_elo_calculation_is_foosball($game_term)) {
+        $player_data->field_foosball_losses->set($player_losses);
+        $player_data->field_foosball_wins->set($player_wins);
+        $player_data->field_foosball_rating->set($player_rating);
+        $player_data->field_total_fb_games_played->set($player_tot_games);
+        $player_data->save();
+    }
 }
