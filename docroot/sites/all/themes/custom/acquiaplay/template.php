@@ -6,6 +6,11 @@
  */
 
 
+/*
+ * Implements hook_theme
+ *
+ * Using this to set up variables for the user login page
+ */
 function acquiaplay_theme() {
     $items = array();
 
@@ -21,6 +26,11 @@ function acquiaplay_theme() {
     return $items;
 }
 
+/*
+ * Implements preprocess_user_login
+ *
+ * Preparing variables for the template page. Currently using them to remove elements from displayed form.
+ */
 function acquiaplay_preprocess_user_login(&$vars) {
     $vars['name'] = render($vars['form']['name']);
     $vars['pass'] = render($vars['form']['pass']);
@@ -50,7 +60,7 @@ function acquiaplay_preprocess_page(&$variables, $hook) {
 /*
  * Implements template_preprocess_views_view_table
  *
- * Changes table to use different css classes
+ * Changes html tables to use different css classes
  */
 function acquiaplay_preprocess_views_view_table(&$vars)
 {
@@ -60,7 +70,7 @@ function acquiaplay_preprocess_views_view_table(&$vars)
 /**
  * Implements template_preprocess_views_view_table
  *
- * Adds variables for use in user template page
+ * Prepare variables for use in user template page
  */
 function acquiaplay_preprocess_user_profile(&$variables) {
     $account = $variables['elements']['#account'];
