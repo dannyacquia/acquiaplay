@@ -1,9 +1,7 @@
 <?php
-
 /**
  * Implement hook_node_presave
  */
-
 function elo_calculation_node_presave($node) {
     if ($node->type == 'match') {
         _elo_calculation_match_presave($node);
@@ -43,28 +41,8 @@ function _elo_calculation_match_presave($node) {
     else {
         $p2 = $node->field_player2[LANGUAGE_NONE][0]['target_id'];
         $p4 = $node->field_player4[LANGUAGE_NONE][0]['target_id'];
+
         // Pull data for users, total opponent rating, wins, and losses
-        /**
-         * From Ted:
-         *
-         * Not sure what is best here. This is what I am thinking but usually I might try these
-         * ideas then look at the code to see if think it is good. But I whether have you try it
-         * and see what you think
-         *
-         * I think you could use _elo_calc_elo_calculation_get_player_data to get more information
-         * what if you changed the function signature to this
-         * _elo_calc_elo_calculation_get_player_data($game_term, $player, $opponents, $team_mate = NULL)
-         *  $opponents : array of opponents, 1 or 2 depending
-         *  $team_mate : might be null if singles
-         *
-         * this function could return ALL info about a player
-         *  rating, opp_rating, wins, losses, total_games
-         * You would then call the functions _elo_calculation_calc_wins_losses and _elo_calculation_calc_elo_rating
-         *  from inside _elo_calculation_get_player_data
-         *
-         * What I am suggesting would actually be less efficient cpu wise then your current code
-         *  but very little difference and  I think readability is much more important here
-         */
         $p1_data = _elo_calculation_get_player_data($game_term, $p1);
         $p2_data = _elo_calculation_get_player_data($game_term, $p2);
         $p3_data = _elo_calculation_get_player_data($game_term, $p3);
@@ -80,15 +58,8 @@ function _elo_calculation_match_presave($node) {
         $p2_elo = _elo_calculation_calc_elo_rating($p2_data['rating'], $team1_opp_rating, $p2_data['totgames'], $wins_losses['t1_match_win']);
         $p3_elo = _elo_calculation_calc_elo_rating($p3_data['rating'], $team2_opp_rating, $p3_data['totgames'], $wins_losses['t2_match_win']);
         $p4_elo = _elo_calculation_calc_elo_rating($p4_data['rating'], $team2_opp_rating, $p4_data['totgames'], $wins_losses['t2_match_win']);
+
         // Update user data with new values
-        /**
-         * From Ted:
-         *
-         * if you make changes above you could simply do
-         *  _elo_calc_elo_calculation_update_player_data($game_term, $p1, $p1_data).
-         *
-         * Then you wouldn't need any line between: _elo_calc_elo_calculation_get_player_data
-         */
         _elo_calculation_update_player_data($game_term, $p1, $wins_losses['p1losses'], $wins_losses['p1wins'], $p1_elo, $p1_data['totgames']);
         _elo_calculation_update_player_data($game_term, $p2, $wins_losses['p2losses'], $wins_losses['p2wins'], $p2_elo, $p2_data['totgames']);
         _elo_calculation_update_player_data($game_term, $p3, $wins_losses['p3losses'], $wins_losses['p3wins'], $p3_elo, $p3_data['totgames']);
@@ -188,7 +159,9 @@ function _elo_calculation_calc_k_value($player_rating, $rating_diff, $match_won,
     if ($k_value_win < 5) {
         $k_value_win = 5;
     }
-
+    if ($total_games < 20) {
+        $k_value_win = 40;
+    }
     if (!$match_won) {
         $k_value_loss = ($k_value - $k_value_win) * -1;
         return $k_value_loss;
