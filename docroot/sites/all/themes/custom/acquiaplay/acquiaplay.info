@@ -7,7 +7,7 @@ base theme = bootstrap
 ;; Acquia Play Settings
 ;;;;;;;;;;;;;;;;;;;;;
 
-settings[toggle_logo] = 0
+settings[toggle_logo] = 1
 settings[toggle_name] = 0
 settings[bootstrap_navbar_position] = 'static-top'
 settings[bootstrap_navbar_inverse] = 1
